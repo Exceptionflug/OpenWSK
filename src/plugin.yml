@@ -1,0 +1,5 @@
+name: OpenWSK
+version: 1.0
+author: St0n3gr1d
+
+main: net.thecobix.openwsk.main.OpenWSK
