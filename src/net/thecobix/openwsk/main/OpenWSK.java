@@ -12,6 +12,7 @@ import de.pro_crafting.commandframework.CommandArgs;
 import de.pro_crafting.commandframework.CommandFramework;
 import de.pro_crafting.commandframework.Completer;
 import net.thecobix.openwsk.commands.CommandWSK;
+import net.thecobix.openwsk.util.Repository;
 
 /*
  * OpenWSK WarShip Fight System by St0n3gr1d
@@ -33,6 +34,8 @@ import net.thecobix.openwsk.commands.CommandWSK;
 public class OpenWSK extends JavaPlugin {
 
 	private CommandFramework cmdFramework;
+	private Repository theRepo = new Repository();
+	
 	private static OpenWSK pluginInstance;
 	
 	public static final String S_PREFIX = "§8[§bWSK§8] §7";
@@ -44,7 +47,7 @@ public class OpenWSK extends JavaPlugin {
 	@Override
 	public void onEnable() {
 		pluginInstance = this;
-		System.out.println("----------------------------------------");
+		System.out.println("------------------------------------------");
 		Logger.log("Startup", "OpenWSK v"+this.getDescription().getVersion()+" by St0n3gr1d / MrCreeperkopf", 0);
 		Logger.log("Startup", "This plugin is using the command framework by Postremus. Visit https://github.com/Postremus/CommandFramework for further information.", 0);
 		String codename = S_CODENAME.isEmpty() ? "" : "§8(§c"+S_CODENAME+"§8)";
@@ -67,6 +70,7 @@ public class OpenWSK extends JavaPlugin {
 		
 		
 		//TODO Local Configs and MySQL integration
+		System.out.println("------------------------------------------");
 	}
 	
 	@Completer(name="wsk")
@@ -124,10 +128,18 @@ public class OpenWSK extends JavaPlugin {
 	
 	/**
 	 * Returns the instance of the main class
-	 * @return
+	 * @return OpenWSK
 	 */
 	public static OpenWSK getPluginInstance() {
 		return pluginInstance;
+	}
+	
+	/**
+	 * Returns the instance of the repository class
+	 * @return Repository
+	 */
+	public Repository getRepo() {
+		return theRepo;
 	}
 	
 }
