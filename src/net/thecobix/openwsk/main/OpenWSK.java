@@ -1,11 +1,17 @@
 package net.thecobix.openwsk.main;
 
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import de.pro_crafting.commandframework.CommandArgs;
+import de.pro_crafting.commandframework.CommandFramework;
+import de.pro_crafting.commandframework.Completer;
+import net.thecobix.openwsk.commands.CommandWSK;
 
 /*
  * OpenWSK WarShip Fight System by St0n3gr1d
@@ -26,12 +32,64 @@ import org.bukkit.plugin.java.JavaPlugin;
  */
 public class OpenWSK extends JavaPlugin {
 
+	private CommandFramework cmdFramework;
+	private static OpenWSK pluginInstance;
+	
+	public static final String S_PREFIX = "§8[§bWSK§8] §7";
+	public static final String S_NONCOLOR_PREFIX = "[WSK] ";
+	public static String S_VERSION;
+	public static final String S_CODENAME = "";
+	
 	
 	@Override
 	public void onEnable() {
+		pluginInstance = this;
 		System.out.println("----------------------------------------");
 		Logger.log("Startup", "OpenWSK v"+this.getDescription().getVersion()+" by St0n3gr1d / MrCreeperkopf", 0);
+		Logger.log("Startup", "This plugin is using the command framework by Postremus. Visit https://github.com/Postremus/CommandFramework for further information.", 0);
+		String codename = S_CODENAME.isEmpty() ? "" : "§8(§c"+S_CODENAME+"§8)";
+		S_VERSION = "§6"+this.getDescription().getVersion()+" "+codename;
+		
+		/* >>> The Framework */
+		this.cmdFramework = new CommandFramework(this);
+		this.cmdFramework.registerCommands(new CommandWSK());
+		
+		
+		Method[] methods = this.getClass().getMethods();
+		for(Method m : methods) {
+			if(m.getName().equalsIgnoreCase("completeCommands")) {
+				this.cmdFramework.registerCompleter("wsk", m, this);
+			}
+		}
+		this.cmdFramework.registerHelp();
+		this.cmdFramework.setInGameOnlyMessage(S_PREFIX+"§cNur ein Spieler kann diesen Befehl ausführen!");
+		/* The Framework <<< */
+		
+		
 		//TODO Local Configs and MySQL integration
+	}
+	
+	@Completer(name="wsk")
+	public List<String> completeCommands(CommandArgs args) {
+		List<String> ret = new ArrayList<String>();
+		String label = args.getCommand().getLabel();
+		for (String arg : args.getArgs()) {
+			label += " " + arg;
+		}
+		for(String currentLabel : this.cmdFramework.getCommandLabels()) {
+			if(currentLabel.contains("nWSK")) {
+				continue;
+			}
+			String current = currentLabel.replace('.', ' ');
+			if (current.contains(label)) {
+				current = current.substring(label.lastIndexOf(' ')).trim();
+				current = current.substring(0, current.indexOf(' ') != -1 ? current.indexOf(' ') : current.length()).trim();
+				if (!ret.contains(current)) {
+					ret.add(current);
+				}
+			}
+		}
+		return ret;
 	}
 	
 	
@@ -62,6 +120,14 @@ public class OpenWSK extends JavaPlugin {
 				break;
 			}
 		}
-		
 	}
+	
+	/**
+	 * Returns the instance of the main class
+	 * @return
+	 */
+	public static OpenWSK getPluginInstance() {
+		return pluginInstance;
+	}
+	
 }
