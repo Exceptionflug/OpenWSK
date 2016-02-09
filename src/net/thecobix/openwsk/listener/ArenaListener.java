@@ -1,4 +1,12 @@
-package net.thecobix.openwsk.team;
+package net.thecobix.openwsk.listener;
+
+import org.bukkit.Bukkit;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+
+import net.thecobix.openwsk.events.PlayerJoinArenaEvent;
+import net.thecobix.openwsk.events.PlayerLeaveArenaEvent;
+import net.thecobix.openwsk.main.OpenWSK;
 
 /*
  * OpenWSK WarShip Fight System by St0n3gr1d
@@ -17,29 +25,20 @@ package net.thecobix.openwsk.team;
    You should have received a copy of the GNU General Public License
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-public class TeamPlayer {
-
-	private PlayerRole role;
-	private String playerName;
+public class ArenaListener implements Listener {
 	
-	public TeamPlayer(String name) {
-		this.playerName = name;
+	@EventHandler
+	public void onJoin(PlayerJoinArenaEvent e) {
+		e.getPlayer().sendMessage(OpenWSK.S_PREFIX+"§aWillkommen in Arena §6"+e.getArena().getName());
+		
+		
 	}
 	
-	public String getPlayerName() {
-		return playerName;
-	}
-	
-	public PlayerRole getRole() {
-		return role;
-	}
-	
-	public void setPlayerName(String playerName) {
-		this.playerName = playerName;
-	}
-	
-	public void setRole(PlayerRole role) {
-		this.role = role;
+	@EventHandler
+	public void onLeave(PlayerLeaveArenaEvent e) {
+		e.getPlayer().sendMessage(OpenWSK.S_PREFIX+"§cAuf Wiedersehen in Arena §6"+e.getArena().getName());
+		
+		
 	}
 	
 }

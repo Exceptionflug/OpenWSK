@@ -1,4 +1,4 @@
-package net.thecobix.openwsk.team;
+package net.thecobix.openwsk.arena;
 
 /*
  * OpenWSK WarShip Fight System by St0n3gr1d
@@ -17,29 +17,8 @@ package net.thecobix.openwsk.team;
    You should have received a copy of the GNU General Public License
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-public class TeamPlayer {
+public enum ArenaState {
 
-	private PlayerRole role;
-	private String playerName;
-	
-	public TeamPlayer(String name) {
-		this.playerName = name;
-	}
-	
-	public String getPlayerName() {
-		return playerName;
-	}
-	
-	public PlayerRole getRole() {
-		return role;
-	}
-	
-	public void setPlayerName(String playerName) {
-		this.playerName = playerName;
-	}
-	
-	public void setRole(PlayerRole role) {
-		this.role = role;
-	}
+	SETUP, PRERUNNING, RUNNING, IDLE, RESET;
 	
 }

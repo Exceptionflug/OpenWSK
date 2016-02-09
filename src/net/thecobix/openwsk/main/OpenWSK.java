@@ -11,7 +11,16 @@ import org.bukkit.plugin.java.JavaPlugin;
 import de.pro_crafting.commandframework.CommandArgs;
 import de.pro_crafting.commandframework.CommandFramework;
 import de.pro_crafting.commandframework.Completer;
+import de.pro_crafting.generator.BlockGenerator;
+import net.thecobix.openwsk.arena.Arena;
+import net.thecobix.openwsk.arena.ArenaManager;
+import net.thecobix.openwsk.commands.CommandArena;
 import net.thecobix.openwsk.commands.CommandWSK;
+import net.thecobix.openwsk.configuration.ConfigHelper;
+import net.thecobix.openwsk.listener.ArenaListener;
+import net.thecobix.openwsk.listener.ConnectionStateChangedListener;
+import net.thecobix.openwsk.listener.PlayerMoveListener;
+import net.thecobix.openwsk.listener.TeleportListener;
 import net.thecobix.openwsk.util.Repository;
 
 /*
@@ -35,13 +44,17 @@ public class OpenWSK extends JavaPlugin {
 
 	private CommandFramework cmdFramework;
 	private Repository theRepo = new Repository();
+	private ArenaManager arenaManager;
+	private ConfigHelper configHelper;
+	private BlockGenerator generator;
 	
 	private static OpenWSK pluginInstance;
 	
 	public static final String S_PREFIX = "§8[§bWSK§8] §7";
 	public static final String S_NONCOLOR_PREFIX = "[WSK] ";
 	public static String S_VERSION;
-	public static final String S_CODENAME = "";
+	public static final String S_CODENAME = "Alpha";
+	public static boolean B_USEMYSQL = false;
 	
 	
 	@Override
@@ -50,13 +63,15 @@ public class OpenWSK extends JavaPlugin {
 		System.out.println("------------------------------------------");
 		Logger.log("Startup", "OpenWSK v"+this.getDescription().getVersion()+" by St0n3gr1d / MrCreeperkopf", 0);
 		Logger.log("Startup", "This plugin is using the command framework by Postremus. Visit https://github.com/Postremus/CommandFramework for further information.", 0);
+		Logger.log("Startup", "This plugin is using the commons and the block generator by pro_crafting. Visit https://github.com/Postremus/ for further information.", 0);
 		String codename = S_CODENAME.isEmpty() ? "" : "§8(§c"+S_CODENAME+"§8)";
+		generator = new BlockGenerator(this, 50000);
 		S_VERSION = "§6"+this.getDescription().getVersion()+" "+codename;
 		
 		/* >>> The Framework */
 		this.cmdFramework = new CommandFramework(this);
 		this.cmdFramework.registerCommands(new CommandWSK());
-		
+		this.cmdFramework.registerCommands(new CommandArena());
 		
 		Method[] methods = this.getClass().getMethods();
 		for(Method m : methods) {
@@ -69,7 +84,23 @@ public class OpenWSK extends JavaPlugin {
 		/* The Framework <<< */
 		
 		
-		//TODO Local Configs and MySQL integration
+		configHelper = new ConfigHelper();
+		configHelper.loadPluginConfig();
+		configHelper.loadArenaConfig();
+		this.arenaManager = new ArenaManager();
+		B_USEMYSQL = configHelper.pluginConfig.cfg.getBoolean("MySQL");
+		if(B_USEMYSQL) {
+			//TODO MySQL integration
+		} else {
+			for(Arena a : configHelper.buildArenas()) {
+				arenaManager.loadArena(a);
+			}
+		}
+		
+		Bukkit.getPluginManager().registerEvents(new ArenaListener(), this);
+		Bukkit.getPluginManager().registerEvents(new PlayerMoveListener(), this);
+		Bukkit.getPluginManager().registerEvents(new ConnectionStateChangedListener(), this);
+		Bukkit.getPluginManager().registerEvents(new TeleportListener(), this);
 		System.out.println("------------------------------------------");
 	}
 	
@@ -100,6 +131,10 @@ public class OpenWSK extends JavaPlugin {
 	@Override
 	public void onDisable() {
 		Logger.log("Shutdown", "Disabling OpenWSK", 0);
+		for(Arena a : arenaManager.loadedArenas) {
+			arenaManager.unloadArena(a);
+		}
+		
 		//TODO Close MySQL if necessary
 	}
 	
@@ -140,6 +175,26 @@ public class OpenWSK extends JavaPlugin {
 	 */
 	public Repository getRepo() {
 		return theRepo;
+	}
+	
+	/**
+	 * The ArenaManager
+	 * @return ArenaManager
+	 */
+	public ArenaManager getArenaManager() {
+		return arenaManager;
+	}
+	
+	/**
+	 * ConfigHelper's instance
+	 * @return ConfigHelper
+	 */
+	public ConfigHelper getConfigHelper() {
+		return configHelper;
+	}
+	
+	public BlockGenerator getGenerator() {
+		return generator;
 	}
 	
 }

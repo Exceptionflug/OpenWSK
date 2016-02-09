@@ -1,10 +1,10 @@
 package net.thecobix.openwsk.events;
 
-import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 import net.thecobix.openwsk.arena.Arena;
+import net.thecobix.openwsk.arena.ArenaState;
 
 /*
  * OpenWSK WarShip Fight System by St0n3gr1d
@@ -23,33 +23,39 @@ import net.thecobix.openwsk.arena.Arena;
    You should have received a copy of the GNU General Public License
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-public class PlayerLeaveArenaEvent extends Event {
-
+public class ArenaStateChangedEvent extends Event {
+	
 	private static final HandlerList handlers = new HandlerList();
 	
 	private Arena arena;
-	private Player player;
+	private ArenaState newState;
+	private ArenaState oldState;
 	
-	public PlayerLeaveArenaEvent(Arena arena, Player player) {
-		this.arena = arena;
-		this.player = player;
+	public ArenaStateChangedEvent(Arena a, ArenaState newState, ArenaState oldState) {
+		this.arena = a;
+		this.newState = newState;
+		this.oldState = oldState;
 	}
-	
+
 	@Override
 	public HandlerList getHandlers() {
 		return handlers;
 	}
-
+	
 	public static HandlerList getHandlerList() {
 		return handlers;
 	}
-	
+
 	public Arena getArena() {
 		return arena;
 	}
 	
-	public Player getPlayer() {
-		return player;
+	public ArenaState getNewState() {
+		return newState;
+	}
+	
+	public ArenaState getOldState() {
+		return oldState;
 	}
 	
 }

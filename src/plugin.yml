@@ -1,5 +1,8 @@
 name: OpenWSK
 version: 1.0
 author: St0n3gr1d
+depend: [WorldEdit, WorldGuard]
+softdepend: [Essentials]
+loadbefore: [WorldEdit, WorldGuard]
 
 main: net.thecobix.openwsk.main.OpenWSK
