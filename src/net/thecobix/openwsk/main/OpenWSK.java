@@ -15,8 +15,10 @@ import de.pro_crafting.generator.BlockGenerator;
 import net.thecobix.openwsk.arena.Arena;
 import net.thecobix.openwsk.arena.ArenaManager;
 import net.thecobix.openwsk.commands.CommandArena;
+import net.thecobix.openwsk.commands.CommandTeam;
 import net.thecobix.openwsk.commands.CommandWSK;
 import net.thecobix.openwsk.configuration.ConfigHelper;
+import net.thecobix.openwsk.invitation.InvitationSystem;
 import net.thecobix.openwsk.listener.ArenaListener;
 import net.thecobix.openwsk.listener.ConnectionStateChangedListener;
 import net.thecobix.openwsk.listener.PlayerMoveListener;
@@ -47,6 +49,7 @@ public class OpenWSK extends JavaPlugin {
 	private ArenaManager arenaManager;
 	private ConfigHelper configHelper;
 	private BlockGenerator generator;
+	private InvitationSystem invitationSystem;
 	
 	private static OpenWSK pluginInstance;
 	
@@ -66,12 +69,14 @@ public class OpenWSK extends JavaPlugin {
 		Logger.log("Startup", "This plugin is using the commons and the block generator by pro_crafting. Visit https://github.com/Postremus/ for further information.", 0);
 		String codename = S_CODENAME.isEmpty() ? "" : "§8(§c"+S_CODENAME+"§8)";
 		generator = new BlockGenerator(this, 50000);
+		invitationSystem = new InvitationSystem();
 		S_VERSION = "§6"+this.getDescription().getVersion()+" "+codename;
 		
 		/* >>> The Framework */
 		this.cmdFramework = new CommandFramework(this);
 		this.cmdFramework.registerCommands(new CommandWSK());
 		this.cmdFramework.registerCommands(new CommandArena());
+		this.cmdFramework.registerCommands(new CommandTeam());
 		
 		Method[] methods = this.getClass().getMethods();
 		for(Method m : methods) {
@@ -131,9 +136,16 @@ public class OpenWSK extends JavaPlugin {
 	@Override
 	public void onDisable() {
 		Logger.log("Shutdown", "Disabling OpenWSK", 0);
+		List<Arena> otherArenaList = new ArrayList<>();
 		for(Arena a : arenaManager.loadedArenas) {
+			otherArenaList.add(a);
+		}
+		for(Arena a : otherArenaList) {
 			arenaManager.unloadArena(a);
 		}
+		otherArenaList.clear();
+		invitationSystem.stopTimer();
+		invitationSystem.invitations.clear();
 		
 		//TODO Close MySQL if necessary
 	}
@@ -195,6 +207,10 @@ public class OpenWSK extends JavaPlugin {
 	
 	public BlockGenerator getGenerator() {
 		return generator;
+	}
+	
+	public InvitationSystem getInvitationSystem() {
+		return invitationSystem;
 	}
 	
 }

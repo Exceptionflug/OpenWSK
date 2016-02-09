@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import net.thecobix.openwsk.arena.Arena;
 import net.thecobix.openwsk.main.OpenWSK;
 
 /*
@@ -27,12 +28,14 @@ import net.thecobix.openwsk.main.OpenWSK;
 public class Team {
 
 	private String teamName;
+	private Arena arena;
 	private ArrayList<TeamPlayer> teamMembers = new ArrayList<TeamPlayer>();
 	private String teamLeader;
 	private int maxTeamSize = 10;
 	
-	public Team(String name) {
+	public Team(String name, Arena arena) {
 		this.teamName = name;
+		this.arena = arena;
 	}
 	
 	public String getTeamLeader() {
@@ -106,7 +109,19 @@ public class Team {
 		if(i >= maxTeamSize) {
 			return false;
 		}
-		teamMembers.add(new TeamPlayer(name));
+		TeamPlayer tp = new TeamPlayer(name);
+		if(isLeader) {
+			tp.setRole(PlayerRole.CAPTAIN);
+			teamLeader = name;
+			for(TeamPlayer d : getTeamMembers()) {
+				if(d.getRole() == PlayerRole.CAPTAIN) {
+					d.setRole(PlayerRole.SOLDAT);
+					Player z = Bukkit.getPlayerExact(d.getPlayerName());
+					z.sendMessage(OpenWSK.S_PREFIX+"§cDu wurdest zum §6Soldat §cdegradiert.");
+				}
+			}
+		}
+		teamMembers.add(tp);
 		return true;
 	}
 	
@@ -120,6 +135,10 @@ public class Team {
 	
 	public void setMaxTeamSize(int maxTeamSize) {
 		this.maxTeamSize = maxTeamSize;
+	}
+	
+	public Arena getArena() {
+		return arena;
 	}
 	
 }

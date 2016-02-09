@@ -1,6 +1,7 @@
 package net.thecobix.openwsk.arena;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -38,7 +39,7 @@ import net.thecobix.openwsk.team.TeamPlayer;
 public class Arena {
 
 	private String arenaName;
-	private Team[] teams = {new Team("team1"), new Team("team2")};
+	private List<Team> teams;
 	private boolean isOpen = false;
 	private ArrayList<String> in = new ArrayList<>();
 	private WaterRemoveSystem waterRemover;
@@ -50,6 +51,9 @@ public class Arena {
 		this.arenaName = arenaName;
 		this.waterRemover = new WaterRemoveSystem(this);
 		
+		this.teams = new ArrayList<>();
+		this.teams.add(new Team("team1", this));
+		this.teams.add(new Team("team2", this));
 		this.repo = new ArenaRepo(this);
 		this.reseter = new ArenaReseter(this);
 	}
@@ -70,11 +74,11 @@ public class Arena {
 	}
 	
 	public Team getTeam1() {
-		return teams[0];
+		return teams.get(0);
 	}
 	
 	public Team getTeam2() {
-		return teams[1];
+		return teams.get(1);
 	}
 	
 	public WaterRemoveSystem getWaterRemover() {
@@ -97,7 +101,7 @@ public class Arena {
 		return repo;
 	}
 	
-	public Team[] getTeams() {
+	public List<Team> getTeams() {
 		return teams;
 	}
 	
@@ -213,6 +217,15 @@ public class Arena {
 	
 	public boolean isOpen() {
 		return isOpen;
+	}
+	
+	public Team getTeamWithoutLeader() {
+		for(Team t : teams) {
+			if(t.getTeamLeader() == null) {
+				return t;
+			}
+		}
+		return null;
 	}
 	
 }

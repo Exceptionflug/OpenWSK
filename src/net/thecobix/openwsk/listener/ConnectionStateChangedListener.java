@@ -8,6 +8,8 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 import net.thecobix.openwsk.arena.Arena;
 import net.thecobix.openwsk.main.OpenWSK;
+import net.thecobix.openwsk.team.Team;
+import net.thecobix.openwsk.team.TeamPlayer;
 
 /*
  * OpenWSK WarShip Fight System by St0n3gr1d
@@ -35,6 +37,7 @@ public class ConnectionStateChangedListener implements Listener {
 			if(OpenWSK.getPluginInstance().getArenaManager().isInArena(p, a)) {
 				//Silent arena join
 				a.getIn().add(p.getName());
+				p.teleport(a.getRepo().getSpectatorWarp());
 			}
 		}
 	}
@@ -45,6 +48,13 @@ public class ConnectionStateChangedListener implements Listener {
 		for(Arena a : OpenWSK.getPluginInstance().getArenaManager().loadedArenas) {
 			if(OpenWSK.getPluginInstance().getArenaManager().isInArena(p, a)) {
 				a.leave(p.getName());
+				for(Team t : a.getTeams()) {
+					for(TeamPlayer tp : t.getTeamMembers()) {
+						if(tp.getPlayerName().equals(p.getName())) {
+							t.removePlayer(p.getName());
+						}
+					}
+				}
 			}
 		}
 	}
