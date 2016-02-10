@@ -9,8 +9,11 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.scheduler.BukkitTask;
 
 import net.thecobix.openwsk.main.OpenWSK;
@@ -45,13 +48,13 @@ public class WaterRemoveSystem implements Listener {
 	
 	public WaterRemoveSystem(Arena a) {
 		this.arena = a;
-		this.explBlocks = new ArrayList<>();
-		this.waterList = new ArrayList<>();
+		explBlocks = new ArrayList<>();
+		waterList = new ArrayList<>();
 	}
 	
 	public void start() {
-		
-		OpenWSK.getPluginInstance().getServer().getPluginManager().registerEvents(this, OpenWSK.getPluginInstance());
+		stop();
+		Bukkit.getPluginManager().registerEvents(this, OpenWSK.getPluginInstance());
 		explBlocks = new ArrayList<>();
 		waterList = new ArrayList<>();
 		task = Bukkit.getScheduler().runTaskTimer(OpenWSK.getPluginInstance(), new Runnable() {
@@ -74,7 +77,7 @@ public class WaterRemoveSystem implements Listener {
 	}
 	
 	public void add(Location loc) {
-		this.explBlocks.add(new SimpleEntry<Location, Integer>(loc, 0));
+		this.explBlocks.add(new SimpleEntry<Location, Integer>(loc, 15));
 	}
 	
 	public void waterCheck() {
@@ -130,5 +133,4 @@ public class WaterRemoveSystem implements Listener {
 		collectBlocks(anchor.getRelative(BlockFace.SOUTH), collected, visitedBlocks);
 		collectBlocks(anchor.getRelative(BlockFace.WEST), collected, visitedBlocks);
 	}
-	
 }

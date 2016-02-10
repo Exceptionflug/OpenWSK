@@ -1,9 +1,16 @@
 package net.thecobix.openwsk.listener;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityExplodeEvent;
 
+import com.sk89q.worldedit.Vector;
+
+import net.thecobix.openwsk.arena.Arena;
 import net.thecobix.openwsk.events.PlayerJoinArenaEvent;
 import net.thecobix.openwsk.events.PlayerLeaveArenaEvent;
 import net.thecobix.openwsk.main.OpenWSK;
@@ -40,5 +47,27 @@ public class ArenaListener implements Listener {
 		
 		
 	}
+	
+	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled=true)
+	public void onExplode(EntityExplodeEvent e) {
+		Arena a = null;
+		for(Arena ar : OpenWSK.getPluginInstance().getArenaManager().loadedArenas) {
+			if(OpenWSK.getPluginInstance().getArenaManager().isLocIn(e.getLocation(), ar)) {
+				a = ar;
+			}
+		}
+		if(a == null) {
+			return;
+		}
+		if(!a.getPlayGroundRegion().contains(new Vector(e.getLocation().getX(), e.getLocation().getY(), e.getLocation().getZ()))) {
+			return;
+		}
+		for(Block b : e.blockList()) {
+			if(b.getType() != Material.WATER || b.getType() != Material.STATIONARY_WATER) {
+				a.getWaterRemover().add(b.getLocation());
+			}
+		}
+	}
+	
 	
 }

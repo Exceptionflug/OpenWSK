@@ -20,6 +20,7 @@ import net.thecobix.openwsk.commands.CommandWSK;
 import net.thecobix.openwsk.configuration.ConfigHelper;
 import net.thecobix.openwsk.invitation.InvitationSystem;
 import net.thecobix.openwsk.listener.ArenaListener;
+import net.thecobix.openwsk.listener.ChatListener;
 import net.thecobix.openwsk.listener.ConnectionStateChangedListener;
 import net.thecobix.openwsk.listener.PlayerMoveListener;
 import net.thecobix.openwsk.listener.TeleportListener;
@@ -106,6 +107,7 @@ public class OpenWSK extends JavaPlugin {
 		Bukkit.getPluginManager().registerEvents(new PlayerMoveListener(), this);
 		Bukkit.getPluginManager().registerEvents(new ConnectionStateChangedListener(), this);
 		Bukkit.getPluginManager().registerEvents(new TeleportListener(), this);
+		Bukkit.getPluginManager().registerEvents(new ChatListener(), this);
 		System.out.println("------------------------------------------");
 	}
 	

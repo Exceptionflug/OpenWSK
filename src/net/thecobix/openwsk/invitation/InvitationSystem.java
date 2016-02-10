@@ -12,6 +12,7 @@ public class InvitationSystem {
 
 	public List<Invitation> invitations = new ArrayList<>();
 	private int task;
+	private List<Invitation> timeoutList = new ArrayList<>();
 	
 	public InvitationSystem() {
 		startTimer();
@@ -33,6 +34,11 @@ public class InvitationSystem {
 						timeout(i);
 					}
 				}
+				for(int i = 0; i < timeoutList.size(); i++) {
+					Invitation in = timeoutList.get(i);
+					invitations.remove(in);
+					timeoutList.remove(in);
+				}
 			}
 		}, 0L, 20L);
 	}
@@ -42,7 +48,7 @@ public class InvitationSystem {
 	}
 	
 	private void timeout(Invitation i) {
-		invitations.remove(i);
+		timeoutList.add(i);
 		Player p = Bukkit.getPlayerExact(i.getSender());
 		Player z = Bukkit.getPlayerExact(i.getReceiver());
 		if(p != null) {
