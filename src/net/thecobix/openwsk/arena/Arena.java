@@ -14,9 +14,11 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import net.thecobix.openwsk.events.ArenaStateChangedEvent;
 import net.thecobix.openwsk.events.PlayerJoinArenaEvent;
 import net.thecobix.openwsk.events.PlayerLeaveArenaEvent;
+import net.thecobix.openwsk.fight.FightScoreboard;
 import net.thecobix.openwsk.kitsystem.KitAPI;
 import net.thecobix.openwsk.main.OpenWSK;
 import net.thecobix.openwsk.team.Team;
+import net.thecobix.openwsk.team.TeamManager;
 import net.thecobix.openwsk.team.TeamPlayer;
 
 /*
@@ -46,6 +48,8 @@ public class Arena {
 	private ArenaRepo repo;
 	private ArenaState state = ArenaState.IDLE;
 	private ArenaReseter reseter;
+	private TeamManager teamManager;
+	private FightScoreboard scoreboard;
 	
 	public Arena(String arenaName) {
 		this.arenaName = arenaName;
@@ -55,7 +59,9 @@ public class Arena {
 		this.teams.add(new Team("team1", this));
 		this.teams.add(new Team("team2", this));
 		this.repo = new ArenaRepo(this);
-		this.reseter = new ArenaReseter(this);
+		this.setReseter(new ArenaReseter(this));
+		this.teamManager = new TeamManager(this);
+		this.scoreboard = new FightScoreboard(this);
 	}
 	
 	public void join(String name) {
@@ -226,6 +232,39 @@ public class Arena {
 			}
 		}
 		return null;
+	}
+
+	public ArenaReseter getReseter() {
+		return reseter;
+	}
+
+	public void setReseter(ArenaReseter reseter) {
+		this.reseter = reseter;
+	}
+	
+	public boolean areBothTeamsReady() {
+		return this.getTeam1().isReady() && this.getTeam2().isReady();
+	}
+
+	public TeamManager getTeamManager() {
+		return teamManager;
+	}
+	
+	public FightScoreboard getScoreboard() {
+		return scoreboard;
+	}
+	
+	public void tpToTeamWarp() {
+		for(Team t : getTeams()) {
+			for(TeamPlayer tp : t.getTeamMembers()) {
+				Player z = Bukkit.getPlayerExact(tp.getPlayerName());
+				if(t.getTeamName().equals("team1")) {
+					z.teleport(repo.getTeam1Warp());
+				} else {
+					z.teleport(repo.getTeam2Warp());
+				}
+			}
+		}
 	}
 	
 }

@@ -2,7 +2,9 @@ package net.thecobix.openwsk.listener;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -11,9 +13,13 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 import com.sk89q.worldedit.Vector;
 
 import net.thecobix.openwsk.arena.Arena;
+import net.thecobix.openwsk.arena.ArenaState;
+import net.thecobix.openwsk.events.ArenaStateChangedEvent;
 import net.thecobix.openwsk.events.PlayerJoinArenaEvent;
 import net.thecobix.openwsk.events.PlayerLeaveArenaEvent;
 import net.thecobix.openwsk.main.OpenWSK;
+import net.thecobix.openwsk.team.Team;
+import net.thecobix.openwsk.team.TeamPlayer;
 
 /*
  * OpenWSK WarShip Fight System by St0n3gr1d
@@ -37,15 +43,13 @@ public class ArenaListener implements Listener {
 	@EventHandler
 	public void onJoin(PlayerJoinArenaEvent e) {
 		e.getPlayer().sendMessage(OpenWSK.S_PREFIX+"§aWillkommen in Arena §6"+e.getArena().getName());
-		
-		
+		e.getArena().getScoreboard().enterArena(e.getPlayer());
 	}
 	
 	@EventHandler
 	public void onLeave(PlayerLeaveArenaEvent e) {
 		e.getPlayer().sendMessage(OpenWSK.S_PREFIX+"§cAuf Wiedersehen in Arena §6"+e.getArena().getName());
-		
-		
+		e.getArena().getScoreboard().leaveArena(e.getPlayer());
 	}
 	
 	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled=true)
@@ -69,5 +73,18 @@ public class ArenaListener implements Listener {
 		}
 	}
 	
-	
+	@EventHandler
+	public void stateChange(ArenaStateChangedEvent e) {
+		Arena a = e.getArena();
+		if(e.getOldState() == ArenaState.SETUP && e.getNewState() == ArenaState.PRERUNNING) {
+			a.giveAllPlayersDefaultKit();
+			for(Team t : a.getTeams()) {
+				for(TeamPlayer tp : t.getTeamMembers()) {
+					Player z = Bukkit.getPlayerExact(tp.getPlayerName());
+					z.playSound(z.getLocation(), Sound.NOTE_PLING, 100, 1);
+				}
+			}
+			
+		}
+	}
 }

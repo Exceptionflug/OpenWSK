@@ -48,13 +48,17 @@ public class ConnectionStateChangedListener implements Listener {
 		for(Arena a : OpenWSK.getPluginInstance().getArenaManager().loadedArenas) {
 			if(OpenWSK.getPluginInstance().getArenaManager().isInArena(p, a)) {
 				a.leave(p.getName());
+				Team sucken = null;
 				for(Team t : a.getTeams()) {
 					for(TeamPlayer tp : t.getTeamMembers()) {
 						if(tp.getPlayerName().equals(p.getName())) {
-							t.removePlayer(p.getName());
+							sucken = t;
 						}
 					}
 				}
+				if(sucken == null)
+					return;
+				sucken.removePlayer(e.getPlayer().getName());
 			}
 		}
 	}

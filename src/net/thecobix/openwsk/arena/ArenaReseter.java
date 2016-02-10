@@ -9,6 +9,7 @@ import org.bukkit.entity.Item;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.junit.internal.runners.model.EachTestNotifier;
 
 import com.sk89q.worldedit.bukkit.BukkitUtil;
 import com.sk89q.worldedit.regions.CuboidRegion;
@@ -44,12 +45,10 @@ import net.thecobix.openwsk.main.OpenWSK;
 public class ArenaReseter implements Listener, JobStateChangedCallback {
 
 	private Arena arena;
-	private int waterLevel;
 	private boolean shouldResetUnderwater = true;
 	
 	public ArenaReseter(Arena arena) {
 		this.arena = arena;
-		waterLevel = arena.getRepo().getWaterLevel();
 		OpenWSK.getPluginInstance().getServer().getPluginManager().registerEvents(this, OpenWSK.getPluginInstance());
 	}
 	
@@ -57,8 +56,8 @@ public class ArenaReseter implements Listener, JobStateChangedCallback {
 		CuboidRegion rg = this.arena.getPlayGroundRegion();
 		World world = this.arena.getRepo().getWorld();
 		Point origin = new Point(BukkitUtil.toLocation(world, rg.getMinimumPoint()));
-		origin.setY(waterLevel);
-		Size size = new Size(rg.getWidth(), rg.getMaximumY(), rg.getLength());
+		origin.setY(arena.getRepo().getWaterLevel());
+		Size size = new Size(rg.getWidth(), rg.getMaximumY()-arena.getRepo().getWaterLevel(), rg.getLength());
 		OpenWSK.getPluginInstance().getGenerator().addJob(new SimpleJob(origin, size, world, this, new SingleBlockProvider(new CuboidCriteria(), Material.AIR, (byte) 0)));
 	}
 	
@@ -68,7 +67,7 @@ public class ArenaReseter implements Listener, JobStateChangedCallback {
 		World world = this.arena.getRepo().getWorld();
 		Point origin = new Point(BukkitUtil.toLocation(world, rg.getMinimumPoint()));
 		origin.setY(rg.getMinimumY());
-		Size size = new Size(rg.getWidth(), waterLevel, rg.getLength());
+		Size size = new Size(rg.getWidth(), arena.getRepo().getWaterLevel()-rg.getMinimumY(), rg.getLength());
 		OpenWSK.getPluginInstance().getGenerator().addJob(new SimpleJob(origin, size, world, this, new SingleBlockProvider(new CuboidCriteria(), Material.STATIONARY_WATER, (byte) 0)));
 	}
 	
@@ -89,7 +88,9 @@ public class ArenaReseter implements Listener, JobStateChangedCallback {
 		if(e.getNewState() == ArenaState.PRERUNNING) {
 			this.removeDrops(this.arena.getRepo().getWorld());
 		} else if(e.getNewState() == ArenaState.RESET) {
-			this.reset();
+			if(this.arena.getRepo().shouldAutoReset()) {
+				this.reset();
+			}
 		}
 	}
 

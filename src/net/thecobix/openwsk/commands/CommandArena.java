@@ -83,6 +83,7 @@ public class CommandArena {
 			p.sendMessage("§bGröße Team2: §a"+a.getTeam2().getTeamMembers().size());
 			String ar = a.getRepo().shouldAutoReset() ? "§aAn" : "§cAus";
 			p.sendMessage("§bAutoReset: §a"+ar);
+			p.sendMessage("§bWasserlevel: §a"+a.getRepo().getWaterLevel());
 			p.sendMessage("§bGesamte Arena (Region): §a"+a.getRepo().getArenaRegion().getId());
 			p.sendMessage("§bKampffläche (Region): §a"+a.getRepo().getInnerRegion().getId());
 			p.sendMessage("§bTeam1 (Region): §a"+a.getRepo().getTeam1Region().getId());
@@ -109,7 +110,7 @@ public class CommandArena {
 				args.getPlayer().sendMessage(OpenWSK.S_PREFIX+"§cDu stehst in keiner Arena.");
 				return;
 			}
-			a.setState(ArenaState.RESET);
+			a.getReseter().reset();
 			args.getPlayer().sendMessage(OpenWSK.S_PREFIX+"§aDie Arena wird gleich resettet!");
 		}
 	}

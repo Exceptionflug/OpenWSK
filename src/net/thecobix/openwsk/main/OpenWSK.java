@@ -11,6 +11,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import de.pro_crafting.commandframework.CommandArgs;
 import de.pro_crafting.commandframework.CommandFramework;
 import de.pro_crafting.commandframework.Completer;
+import de.pro_crafting.common.scoreboard.ScoreboardManager;
 import de.pro_crafting.generator.BlockGenerator;
 import net.thecobix.openwsk.arena.Arena;
 import net.thecobix.openwsk.arena.ArenaManager;
@@ -24,6 +25,7 @@ import net.thecobix.openwsk.listener.ChatListener;
 import net.thecobix.openwsk.listener.ConnectionStateChangedListener;
 import net.thecobix.openwsk.listener.PlayerMoveListener;
 import net.thecobix.openwsk.listener.TeleportListener;
+import net.thecobix.openwsk.team.Team;
 import net.thecobix.openwsk.util.Repository;
 
 /*
@@ -58,7 +60,6 @@ public class OpenWSK extends JavaPlugin {
 	public static final String S_NONCOLOR_PREFIX = "[WSK] ";
 	public static String S_VERSION;
 	public static final String S_CODENAME = "Alpha";
-	public static boolean B_USEMYSQL = false;
 	
 	
 	@Override
@@ -69,7 +70,7 @@ public class OpenWSK extends JavaPlugin {
 		Logger.log("Startup", "This plugin is using the command framework by Postremus. Visit https://github.com/Postremus/CommandFramework for further information.", 0);
 		Logger.log("Startup", "This plugin is using the commons and the block generator by pro_crafting. Visit https://github.com/Postremus/ for further information.", 0);
 		String codename = S_CODENAME.isEmpty() ? "" : "§8(§c"+S_CODENAME+"§8)";
-		generator = new BlockGenerator(this, 50000);
+		generator = new BlockGenerator(this, 30000);
 		invitationSystem = new InvitationSystem();
 		S_VERSION = "§6"+this.getDescription().getVersion()+" "+codename;
 		
@@ -92,15 +93,10 @@ public class OpenWSK extends JavaPlugin {
 		
 		configHelper = new ConfigHelper();
 		configHelper.loadPluginConfig();
-		configHelper.loadArenaConfig();
 		this.arenaManager = new ArenaManager();
-		B_USEMYSQL = configHelper.pluginConfig.cfg.getBoolean("MySQL");
-		if(B_USEMYSQL) {
-			//TODO MySQL integration
-		} else {
-			for(Arena a : configHelper.buildArenas()) {
-				arenaManager.loadArena(a);
-			}
+		configHelper.loadArenaConfig();
+		for(Arena a : configHelper.buildArenas()) {
+			arenaManager.loadArena(a);
 		}
 		
 		Bukkit.getPluginManager().registerEvents(new ArenaListener(), this);
@@ -213,6 +209,7 @@ public class OpenWSK extends JavaPlugin {
 	
 	public InvitationSystem getInvitationSystem() {
 		return invitationSystem;
+
 	}
 	
 }

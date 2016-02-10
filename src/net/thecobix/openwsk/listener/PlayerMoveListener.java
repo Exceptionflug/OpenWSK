@@ -1,6 +1,5 @@
 package net.thecobix.openwsk.listener;
 
-import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -8,6 +7,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
 
 import net.thecobix.openwsk.arena.Arena;
 import net.thecobix.openwsk.main.OpenWSK;
+import net.thecobix.openwsk.team.Team;
 
 /*
  * OpenWSK WarShip Fight System by St0n3gr1d
@@ -41,6 +41,45 @@ public class PlayerMoveListener implements Listener {
 				}
 			}
 		}
+		Team t = OpenWSK.getPluginInstance().getArenaManager().getTeamFromPlayer(e.getPlayer());
+		if(t == null) {
+			return;
+		}
+		if(t.getTeamName().equals("team1")) {
+			if(t.getArena().getRepo().getTeam1Region().contains((int)e.getFrom().getX(), (int)e.getFrom().getY(), (int)e.getFrom().getZ())) {
+				if(t.getArena().getRepo().getTeam2Region().contains((int)e.getTo().getX(), (int)e.getTo().getY(), (int)e.getTo().getZ())) {
+					if(t.getArena().getRepo().isEnteringAllowed() || e.getPlayer().hasPermission("wsk.bypass")) {
+						
+					} else {
+						e.getPlayer().teleport(e.getFrom());
+					}
+				} else {
+					if(t.getArena().getRepo().getTeam1Region().contains((int)e.getTo().getX(), (int)e.getTo().getY(), (int)e.getTo().getZ()) || e.getPlayer().hasPermission("wsk.bypass")) {
+						
+					} else {
+						e.getPlayer().teleport(e.getFrom());
+					}
+				}
+			}
+		}
+		if(t.getTeamName().equals("team2")) {
+			if(t.getArena().getRepo().getTeam2Region().contains((int)e.getFrom().getX(), (int)e.getFrom().getY(), (int)e.getFrom().getZ())) {
+				if(t.getArena().getRepo().getTeam1Region().contains((int)e.getTo().getX(), (int)e.getTo().getY(), (int)e.getTo().getZ())) {
+					if(t.getArena().getRepo().isEnteringAllowed() || e.getPlayer().hasPermission("wsk.bypass")) {
+						
+					} else {
+						e.getPlayer().teleport(e.getFrom());
+					}
+				} else {
+					if(t.getArena().getRepo().getTeam2Region().contains((int)e.getTo().getX(), (int)e.getTo().getY(), (int)e.getTo().getZ()) || e.getPlayer().hasPermission("wsk.bypass")) {
+						
+					} else {
+						e.getPlayer().teleport(e.getFrom());
+					}
+				}
+			}
+		}
+		
 	}
 	
 }

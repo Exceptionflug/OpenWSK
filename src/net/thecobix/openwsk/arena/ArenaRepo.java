@@ -1,12 +1,9 @@
 package net.thecobix.openwsk.arena;
 
-import java.io.File;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 
-import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
@@ -50,6 +47,7 @@ public class ArenaRepo {
 	private ProtectedRegion innerRegion;
 	private boolean essentialsKit;
 	private String essentialsKitName;
+	public int timeLeftMinutes = 60;
 	
 	public ArenaRepo(Arena a) {
 		this.arena = a;
@@ -87,7 +85,7 @@ public class ArenaRepo {
 			}
 			this.world = worldName;
 			return true;
-		}catch(NullPointerException e) {
+		}catch(Exception e) {
 			return false;
 		}
 	}
@@ -120,9 +118,6 @@ public class ArenaRepo {
 	
 	private boolean loadWaterLevel() {
 		int waterLevel = this.arenaConfig.cfg.getInt("Arena.location.waterlevel");
-		if(waterLevel < 0 || waterLevel > this.getWorld().getMaxHeight()) {
-			return false;
-		}
 		this.waterLevel = waterLevel;
 		return true;
 	}

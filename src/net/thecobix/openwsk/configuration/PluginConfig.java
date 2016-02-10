@@ -39,12 +39,6 @@ public class PluginConfig {
 		this.cfg.options().copyDefaults(true);
 		this.cfg.options().header("config.yml by OpenWSK v"+OpenWSK.getPluginInstance().getDescription().getVersion());
 		this.cfg.addDefault("Arenas", "Example1,Example2");
-		this.cfg.addDefault("MySQL", false);
-		this.cfg.addDefault("Host", "localhost");
-		this.cfg.addDefault("Port", 3306);
-		this.cfg.addDefault("Database", "OpenWSK");
-		this.cfg.addDefault("User", "usernameHere");
-		this.cfg.addDefault("Password", "pwHere");
 		try {
 			this.cfg.save(file);
 		} catch (IOException e) {

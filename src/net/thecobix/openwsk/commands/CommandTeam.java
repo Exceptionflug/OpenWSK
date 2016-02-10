@@ -9,6 +9,7 @@ import de.pro_crafting.commandframework.Command;
 import de.pro_crafting.commandframework.CommandArgs;
 import net.thecobix.openwsk.arena.Arena;
 import net.thecobix.openwsk.arena.ArenaState;
+import net.thecobix.openwsk.fight.PreRunningTimer;
 import net.thecobix.openwsk.invitation.Invitation;
 import net.thecobix.openwsk.main.OpenWSK;
 import net.thecobix.openwsk.team.Team;
@@ -127,14 +128,17 @@ public class CommandTeam {
 			t.addPlayer(z, true);
 			if(t.getTeamName().equals("team1")) {
 				z.teleport(a.getRepo().getTeam1Warp());
+				z.setDisplayName("§c"+p.getName());
 			} else {
 				z.teleport(a.getRepo().getTeam2Warp());
+				z.setDisplayName("§9"+p.getName());
 			}
 			z.sendMessage(OpenWSK.S_PREFIX+"§6Teammanagement:");
 			z.sendMessage("§8/wsk team invite <Name> - §6Lädt einen Spieler in dein Team ein.");
 			z.sendMessage("§8/wsk team kick <Name> - §6Wirft einen Spieler aus deinem Team.");
 			z.sendMessage("§8/wsk team leave - §6Du verlässt das Team.");
 			z.sendMessage("§8/wsk team ready - §6Du stellst dein Team bereit.");
+			a.getScoreboard().addTeamMember(z, t);
 			if(a.getState() != ArenaState.SETUP) {
 				a.setState(ArenaState.SETUP);
 			}
@@ -152,6 +156,143 @@ public class CommandTeam {
 			}
 			OpenWSK.getPluginInstance().getInvitationSystem().decline(i);
 			p.sendMessage(OpenWSK.S_PREFIX+"§cDu hast die Einladung abgelehnt.");
+		}
+	}
+	
+	@Command(name="wsk.team.accept", description="Nimmt eine Einladung an.", usage="/Wsk team accpet")
+	public void onAccept(CommandArgs args) {
+		if(args.isPlayer()) {
+			Player p = args.getPlayer();
+			Team t = OpenWSK.getPluginInstance().getArenaManager().getTeamFromPlayer(p);
+			if(t != null) {
+				p.sendMessage(OpenWSK.S_PREFIX+"§cDu bist bereits in einem Team.");
+				return;
+			}
+			Invitation i = OpenWSK.getPluginInstance().getInvitationSystem().getInvitation(p.getName());
+			if(i == null) {
+				p.sendMessage(OpenWSK.S_PREFIX+"§cDu hast keine offenen Einladungen.");
+				return;
+			}
+			Player z = Bukkit.getPlayerExact(i.getSender());
+			if(z == null) {
+				OpenWSK.getPluginInstance().getInvitationSystem().invitations.remove(i);
+				p.sendMessage(OpenWSK.S_PREFIX+"§cDer Spieler ist bereits offline.");
+				return;
+			}
+			Team tz = OpenWSK.getPluginInstance().getArenaManager().getTeamFromPlayer(z);
+			if(tz == null) {
+				OpenWSK.getPluginInstance().getInvitationSystem().invitations.remove(i);
+				p.sendMessage(OpenWSK.S_PREFIX+"§cDas Zielteam existiert nicht mehr.");
+				return;
+			}
+			if(!tz.getTeamLeader().equals(z.getName())) {
+				OpenWSK.getPluginInstance().getInvitationSystem().invitations.remove(i);
+				p.sendMessage(OpenWSK.S_PREFIX+"§cDas wird nicht mehr von §6"+z.getName()+" §cangeführt.");
+				return;
+			}
+			if(tz.getArena().getState() != ArenaState.SETUP) {
+				OpenWSK.getPluginInstance().getInvitationSystem().invitations.remove(i);
+				p.sendMessage(OpenWSK.S_PREFIX+"§cDie Arena ist nicht mehr in der Vorbereitungsphase.");
+				return;
+			}
+			if(tz.addPlayer(p)) {
+				OpenWSK.getPluginInstance().getInvitationSystem().accept(i);
+				tz.getArena().getScoreboard().addTeamMember(p, tz);
+				if(tz.getTeamName().equals("team1")) {
+					p.teleport(tz.getArena().getRepo().getTeam1Warp());
+					p.setDisplayName("§c"+p.getName());
+				} else {
+					p.teleport(tz.getArena().getRepo().getTeam2Warp());
+					p.setDisplayName("§9"+p.getName());
+				}
+				p.sendMessage(OpenWSK.S_PREFIX+"§aDu bist standartmäßig ein §6Soldat §a. Wechsle deine Rolle mit §6/wsk team changerole§a.");
+			} else {
+				OpenWSK.getPluginInstance().getInvitationSystem().invitations.remove(i);
+				p.sendMessage(OpenWSK.S_PREFIX+"§cDu konntest nicht hinzugefügt werden!");
+			}
+		}
+	}
+	
+	@Command(name="wsk.team.leave", description="Du verlässt dein Team.", usage="/Wsk team leave")
+	public void leave(CommandArgs args) {
+		if(args.isPlayer()) {
+			Player p = args.getPlayer();
+			Team sucken = OpenWSK.getPluginInstance().getArenaManager().getTeamFromPlayer(p);
+			if(sucken == null) {
+				p.sendMessage(OpenWSK.S_PREFIX+"§cDu bist in keinem Team.");
+				return;
+			}
+			if(sucken.getArena().getState() != ArenaState.SETUP) {
+				p.sendMessage(OpenWSK.S_PREFIX+"§cDu kannst jetzt nicht das Team verlassen.");
+				return;
+			}
+			p.sendMessage(OpenWSK.S_PREFIX+"§aDu hast dein Team im Stich gelassen...");
+			sucken.removePlayer(p.getName());
+		}
+	}
+	
+	@Command(name="wsk.team.kick", description="Wirft einen Spieler aus deinem Team.", usage="/wsk team kick <Name>")
+	public void kick(CommandArgs args) {
+		if(args.isPlayer()) {
+			Player p = args.getPlayer();
+			if(args.getArgs().length == 0) {
+				p.sendMessage(OpenWSK.S_PREFIX+"§bBenutzung: /wsk team kick <Name>");
+				return;
+			}
+			Team t = OpenWSK.getPluginInstance().getArenaManager().getTeamFromPlayer(p);
+			if(t == null) {
+				p.sendMessage(OpenWSK.S_PREFIX+"§cDu bist in keinem Team");
+				return;
+			}
+			Player z = Bukkit.getPlayerExact(args.getArgs(0));
+			if(z == null) {
+				p.sendMessage(OpenWSK.S_PREFIX+"§cDieser Spieler ist nicht online.");
+				return;
+			}
+			Team tz = OpenWSK.getPluginInstance().getArenaManager().getTeamFromPlayer(z);
+			if(tz == null) {
+				p.sendMessage(OpenWSK.S_PREFIX+"§cDer Spieler ist in keinem Team");
+				return;
+			}
+			if(!t.getTeamLeader().equals(p.getName())) {
+				p.sendMessage(OpenWSK.S_PREFIX+"§cNur der Captain kann Änderungen am Team vornehmen.");
+				return;
+			}
+			if(t.getArena().getArenaName().equals(tz.getArena().getArenaName()) && t.getTeamName().equals(tz.getTeamName())) {
+				z.sendMessage(OpenWSK.S_PREFIX+"§cDu wurdest aus dem Team geworfen.");
+				t.removePlayer(z.getName());
+				p.sendMessage(OpenWSK.S_PREFIX+"§aDu hast §6"+z.getName()+" §aaus deinem Team entfernt.");
+			} else {
+				p.sendMessage(OpenWSK.S_PREFIX+"§cDer Spieler ist nicht in deinem Team.");
+			}
+		}
+	}
+	
+	@Command(name="wsk.team.ready", description="Setzt dein Team bereit", usage="/wsk team ready")
+	public void ready(CommandArgs args) {
+		if(args.isPlayer()) {
+			Player p = args.getPlayer();
+			Team t = OpenWSK.getPluginInstance().getArenaManager().getTeamFromPlayer(p);
+			if(t == null) {
+				p.sendMessage(OpenWSK.S_PREFIX+"§cDu bist in keinem Team!");
+				return;
+			}
+			if(!t.getTeamLeader().equals(p.getName())) {
+				p.sendMessage(OpenWSK.S_PREFIX+"§cNur der Captain kann Änderungen am Team vornehmen.");
+				return;
+			}
+			if(t.getArena().getState() != ArenaState.SETUP) {
+				p.sendMessage(OpenWSK.S_PREFIX+"§cDu kannst jetzt dein Teamstatus nicht ändern.");
+				return;
+			}
+			t.setReady(!t.isReady());
+			String msg = t.isReady() ? "Dein Team ist nun bereit" : "Dein Team ist nicht mehr bereit";
+			p.sendMessage(OpenWSK.S_PREFIX+msg);
+			if(t.getArena().areBothTeamsReady()) {
+				t.getArena().setState(ArenaState.PRERUNNING);
+				PreRunningTimer prt = new PreRunningTimer(t.getArena());
+				prt.preRunningTimer();
+			}
 		}
 	}
 	

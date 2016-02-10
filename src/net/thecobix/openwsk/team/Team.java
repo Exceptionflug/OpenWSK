@@ -32,6 +32,7 @@ public class Team {
 	private ArrayList<TeamPlayer> teamMembers = new ArrayList<TeamPlayer>();
 	private String teamLeader;
 	private int maxTeamSize = 10;
+	private boolean isReady = false;
 	
 	public Team(String name, Arena arena) {
 		this.teamName = name;
@@ -85,14 +86,18 @@ public class Team {
 		}
 	}
 	
-	public boolean removePlayer(String name) {
+	public void removePlayer(String name) {
+		TeamPlayer sucken = null;
 		for(TeamPlayer tp : teamMembers) {
 			if(tp.getPlayerName().equals(name)) {
-				teamMembers.remove(tp);
-				return true;
+				sucken = tp;
 			}
 		}
-		return false;
+		Player z = Bukkit.getPlayerExact(name);
+		if(z != null) {
+			z.setDisplayName(z.getName());
+		}
+		this.teamMembers.remove(sucken);
 	}
 	
 	public boolean addPlayer(Player player) {
@@ -110,6 +115,7 @@ public class Team {
 			return false;
 		}
 		TeamPlayer tp = new TeamPlayer(name);
+		tp.setRole(PlayerRole.SOLDAT);
 		if(isLeader) {
 			tp.setRole(PlayerRole.CAPTAIN);
 			teamLeader = name;
@@ -139,6 +145,14 @@ public class Team {
 	
 	public Arena getArena() {
 		return arena;
+	}
+	
+	public boolean isReady() {
+		return isReady;
+	}
+	
+	public void setReady(boolean isReady) {
+		this.isReady = isReady;
 	}
 	
 }
