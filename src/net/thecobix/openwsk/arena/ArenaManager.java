@@ -33,7 +33,7 @@ public class ArenaManager {
 	
 	public Arena getArenaFromPlayer(Player p) {
 		for(Arena a : loadedArenas) {
-			if(a.getRepo().getArenaRegion().contains((int)p.getLocation().getX(), (int)p.getLocation().getY(), (int)p.getLocation().getZ())) {
+			if(a.getRepo().getArenaRegion().contains((int)p.getLocation().getX(), (int)p.getLocation().getY(), (int)p.getLocation().getZ()) && p.getWorld().getName().equals(a.getRepo().getWorld().getName())) {
 				if(!a.getIn().contains(p.getName())) {
 					a.join(p.getName());
 				}
@@ -48,11 +48,11 @@ public class ArenaManager {
 	}
 	
 	public boolean isInArena(Player p, Arena a) {
-		return a.getRepo().getArenaRegion().contains((int)p.getLocation().getX(), (int)p.getLocation().getY(), (int)p.getLocation().getZ());
+		return a.getRepo().getArenaRegion().contains((int)p.getLocation().getX(), (int)p.getLocation().getY(), (int)p.getLocation().getZ()) && p.getWorld().getName().equals(a.getRepo().getWorld().getName());
 	}
 	
 	public boolean isLocIn(Location loc, Arena a) {
-		return a.getRepo().getArenaRegion().contains((int)loc.getX(), (int)loc.getY(), (int)loc.getZ());
+		return a.getRepo().getArenaRegion().contains((int)loc.getX(), (int)loc.getY(), (int)loc.getZ())&& loc.getWorld().getName().equals(a.getRepo().getWorld().getName());
 	}
 	
 	public Team getTeamFromPlayer(Player p) {

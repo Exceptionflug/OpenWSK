@@ -106,7 +106,7 @@ public class ArenaRepo {
 		return rm.getRegion(name);
 	}
 	
-	World getWorld() {
+	public World getWorld() {
 		return Bukkit.getWorld(world);
 	}
 	

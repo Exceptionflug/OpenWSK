@@ -48,8 +48,8 @@ public class PlayerMoveListener implements Listener {
 			return;
 		}
 		if(t.getTeamName().equals("team1")) {
-			if(t.getArena().getRepo().getTeam1Region().contains((int)e.getFrom().getX(), (int)e.getFrom().getY(), (int)e.getFrom().getZ())) {
-				if(t.getArena().getRepo().getTeam2Region().contains((int)e.getTo().getX(), (int)e.getTo().getY(), (int)e.getTo().getZ())) {
+			if(t.getArena().getRepo().getTeam1Region().contains((int)e.getFrom().getX(), (int)e.getFrom().getY(), (int)e.getFrom().getZ())&& e.getPlayer().getWorld().getName().equals(t.getArena().getRepo().getWorld().getName())) {
+				if(t.getArena().getRepo().getTeam2Region().contains((int)e.getTo().getX(), (int)e.getTo().getY(), (int)e.getTo().getZ())&& e.getPlayer().getWorld().getName().equals(t.getArena().getRepo().getWorld().getName())) {
 					if(t.getArena().getRepo().isEnteringAllowed() || e.getPlayer().hasPermission("wsk.bypass")) {
 						TeamPlayer tp = null;
 						for(TeamPlayer tpl : t.getTeamMembers()) {
@@ -70,7 +70,7 @@ public class PlayerMoveListener implements Listener {
 						e.getPlayer().teleport(e.getFrom());
 					}
 				} else {
-					if(t.getArena().getRepo().getTeam1Region().contains((int)e.getTo().getX(), (int)e.getTo().getY(), (int)e.getTo().getZ()) || e.getPlayer().hasPermission("wsk.bypass")) {
+					if(t.getArena().getRepo().getTeam1Region().contains((int)e.getTo().getX(), (int)e.getTo().getY(), (int)e.getTo().getZ())&& e.getPlayer().getWorld().getName().equals(t.getArena().getRepo().getWorld().getName()) || e.getPlayer().hasPermission("wsk.bypass")) {
 						
 					} else {
 						e.getPlayer().teleport(e.getFrom());
@@ -79,8 +79,8 @@ public class PlayerMoveListener implements Listener {
 			}
 		}
 		if(t.getTeamName().equals("team2")) {
-			if(t.getArena().getRepo().getTeam2Region().contains((int)e.getFrom().getX(), (int)e.getFrom().getY(), (int)e.getFrom().getZ())) {
-				if(t.getArena().getRepo().getTeam1Region().contains((int)e.getTo().getX(), (int)e.getTo().getY(), (int)e.getTo().getZ())) {
+			if(t.getArena().getRepo().getTeam2Region().contains((int)e.getFrom().getX(), (int)e.getFrom().getY(), (int)e.getFrom().getZ())&& e.getPlayer().getWorld().getName().equals(t.getArena().getRepo().getWorld().getName())) {
+				if(t.getArena().getRepo().getTeam1Region().contains((int)e.getTo().getX(), (int)e.getTo().getY(), (int)e.getTo().getZ())&& e.getPlayer().getWorld().getName().equals(t.getArena().getRepo().getWorld().getName())) {
 					if(t.getArena().getRepo().isEnteringAllowed() || e.getPlayer().hasPermission("wsk.bypass")) {
 						TeamPlayer tp = null;
 						for(TeamPlayer tpl : t.getTeamMembers()) {
@@ -101,7 +101,7 @@ public class PlayerMoveListener implements Listener {
 						e.getPlayer().teleport(e.getFrom());
 					}
 				} else {
-					if(t.getArena().getRepo().getTeam2Region().contains((int)e.getTo().getX(), (int)e.getTo().getY(), (int)e.getTo().getZ()) || e.getPlayer().hasPermission("wsk.bypass")) {
+					if(t.getArena().getRepo().getTeam2Region().contains((int)e.getTo().getX(), (int)e.getTo().getY(), (int)e.getTo().getZ())&& e.getPlayer().getWorld().getName().equals(t.getArena().getRepo().getWorld().getName()) || e.getPlayer().hasPermission("wsk.bypass")) {
 						
 					} else {
 						e.getPlayer().teleport(e.getFrom());
