@@ -23,6 +23,8 @@ import net.thecobix.openwsk.invitation.InvitationSystem;
 import net.thecobix.openwsk.listener.ArenaListener;
 import net.thecobix.openwsk.listener.ChatListener;
 import net.thecobix.openwsk.listener.ConnectionStateChangedListener;
+import net.thecobix.openwsk.listener.FightListener;
+import net.thecobix.openwsk.listener.InventoryListener;
 import net.thecobix.openwsk.listener.PlayerMoveListener;
 import net.thecobix.openwsk.listener.TeleportListener;
 import net.thecobix.openwsk.team.Team;
@@ -59,7 +61,7 @@ public class OpenWSK extends JavaPlugin {
 	public static final String S_PREFIX = "§8[§bWSK§8] §7";
 	public static final String S_NONCOLOR_PREFIX = "[WSK] ";
 	public static String S_VERSION;
-	public static final String S_CODENAME = "Alpha";
+	public static final String S_CODENAME = "Beta 1";
 	
 	
 	@Override
@@ -104,6 +106,8 @@ public class OpenWSK extends JavaPlugin {
 		Bukkit.getPluginManager().registerEvents(new ConnectionStateChangedListener(), this);
 		Bukkit.getPluginManager().registerEvents(new TeleportListener(), this);
 		Bukkit.getPluginManager().registerEvents(new ChatListener(), this);
+		Bukkit.getPluginManager().registerEvents(new FightListener(), this);
+		Bukkit.getPluginManager().registerEvents(new InventoryListener(), this);
 		System.out.println("------------------------------------------");
 	}
 	
@@ -144,8 +148,6 @@ public class OpenWSK extends JavaPlugin {
 		otherArenaList.clear();
 		invitationSystem.stopTimer();
 		invitationSystem.invitations.clear();
-		
-		//TODO Close MySQL if necessary
 	}
 	
 	public static class Logger {

@@ -24,10 +24,6 @@ import net.thecobix.openwsk.main.OpenWSK;
  */
 public class Repository {
 
-	public WorldEditPlugin getWorldEdit() {
-		return (WorldEditPlugin) OpenWSK.getPluginInstance().getServer().getPluginManager().getPlugin("WorldEdit");
-	}
-	
 	public WorldGuardPlugin getWorldGuard() {
 		return (WorldGuardPlugin) OpenWSK.getPluginInstance().getServer().getPluginManager().getPlugin("WorldGuard");
 	}

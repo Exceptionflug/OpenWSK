@@ -5,6 +5,10 @@ import org.bukkit.entity.Player;
 
 import de.pro_crafting.commandframework.Command;
 import de.pro_crafting.commandframework.CommandArgs;
+import net.thecobix.openwsk.arena.Arena;
+import net.thecobix.openwsk.events.FightQuitEvent;
+import net.thecobix.openwsk.fight.Fight;
+import net.thecobix.openwsk.fight.FightManager;
 import net.thecobix.openwsk.main.OpenWSK;
 
 /*
@@ -75,7 +79,10 @@ public class CommandWSK {
 		if(!args.isPlayer()) {
 			return;
 		}
+		OpenWSK.getPluginInstance().getConfigHelper().registeredArenaStringList.clear();
+		OpenWSK.getPluginInstance().getConfigHelper().arenaConfigs.clear();
 		Bukkit.getPluginManager().disablePlugin(OpenWSK.getPluginInstance());
+		OpenWSK.getPluginInstance().getArenaManager().loadedArenas.clear();
 		Bukkit.getPluginManager().enablePlugin(OpenWSK.getPluginInstance());
 		args.getPlayer().sendMessage(OpenWSK.S_PREFIX+"§aDas Plugin wurde neu geladen!");
 	}
@@ -91,6 +98,39 @@ public class CommandWSK {
 			p.sendMessage("§b--- §aDanksagungen §b---");
 			p.sendMessage("§7Danke an Postremus für das CommandFramework sowie die Commons und den BlockGenerator.");
 			p.sendMessage("§7Weiterer Dank gebührt dem MyPlayPlanet Admin-Team für das WGK System.");
+		}
+	}
+	
+	@Command(name="wsk.quit", description="Beendet einen Kampf.", usage="/wsk quit [team1,team2]", permission="wsk.quit")
+	public void quit(CommandArgs args) {
+		if(args.isPlayer()) {
+			Player p = args.getPlayer();
+			Arena a = OpenWSK.getPluginInstance().getArenaManager().getArenaFromPlayer(p);
+			if(a == null) {
+				p.sendMessage(OpenWSK.S_PREFIX+"§cDu stehst in keiner Arena.");
+				return;
+			}
+			Fight f = null;
+			for(Fight fi : FightManager.fights) {
+				if(fi.getArena().getArenaName().equals(a.getArenaName())) {
+					f = fi;
+				}
+			}
+			if(f == null) {
+				p.sendMessage(OpenWSK.S_PREFIX+"§cHier läuft kein Kampf.");
+				return;
+			}
+			if(args.getArgs().length == 0) {
+				Bukkit.getPluginManager().callEvent(new FightQuitEvent(f, "§6Kampf beendet - Unentschieden"));
+			} else {
+				if(args.getArgs(0).equalsIgnoreCase("team1")) {
+					Bukkit.getPluginManager().callEvent(new FightQuitEvent(f, "§cKampf beendet - Team1 gewinnt (Rot)"));
+				} else if(args.getArgs(0).equalsIgnoreCase("team2")) {
+					Bukkit.getPluginManager().callEvent(new FightQuitEvent(f, "§9Kampf beendet - Team2 gewinnt (Blau)"));
+				} else {
+					p.sendMessage(OpenWSK.S_PREFIX+"§bBenutzung: /wsk quit [team1,team2]");
+				}
+			}
 		}
 	}
 	

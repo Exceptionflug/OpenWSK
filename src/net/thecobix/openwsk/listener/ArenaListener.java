@@ -17,6 +17,8 @@ import net.thecobix.openwsk.arena.ArenaState;
 import net.thecobix.openwsk.events.ArenaStateChangedEvent;
 import net.thecobix.openwsk.events.PlayerJoinArenaEvent;
 import net.thecobix.openwsk.events.PlayerLeaveArenaEvent;
+import net.thecobix.openwsk.fight.Fight;
+import net.thecobix.openwsk.fight.FightManager;
 import net.thecobix.openwsk.main.OpenWSK;
 import net.thecobix.openwsk.team.Team;
 import net.thecobix.openwsk.team.TeamPlayer;
@@ -77,7 +79,9 @@ public class ArenaListener implements Listener {
 	public void stateChange(ArenaStateChangedEvent e) {
 		Arena a = e.getArena();
 		if(e.getOldState() == ArenaState.SETUP && e.getNewState() == ArenaState.PRERUNNING) {
+			a.preparePlayerZ();
 			a.giveAllPlayersDefaultKit();
+			a.replace();
 			for(Team t : a.getTeams()) {
 				for(TeamPlayer tp : t.getTeamMembers()) {
 					Player z = Bukkit.getPlayerExact(tp.getPlayerName());
@@ -85,6 +89,12 @@ public class ArenaListener implements Listener {
 				}
 			}
 			
+		} else if(e.getOldState() == ArenaState.RUNNING && e.getNewState() == ArenaState.SPECTATE) {
+			for(Fight f : FightManager.fights) {
+				if(f.getArena().getArenaName().equals(e.getArena().getArenaName())) {
+					FightManager.spectate(f);
+				}
+			}
 		}
 	}
 }

@@ -7,7 +7,9 @@ import org.bukkit.event.player.PlayerMoveEvent;
 
 import net.thecobix.openwsk.arena.Arena;
 import net.thecobix.openwsk.main.OpenWSK;
+import net.thecobix.openwsk.team.PlayerRole;
 import net.thecobix.openwsk.team.Team;
+import net.thecobix.openwsk.team.TeamPlayer;
 
 /*
  * OpenWSK WarShip Fight System by St0n3gr1d
@@ -49,7 +51,21 @@ public class PlayerMoveListener implements Listener {
 			if(t.getArena().getRepo().getTeam1Region().contains((int)e.getFrom().getX(), (int)e.getFrom().getY(), (int)e.getFrom().getZ())) {
 				if(t.getArena().getRepo().getTeam2Region().contains((int)e.getTo().getX(), (int)e.getTo().getY(), (int)e.getTo().getZ())) {
 					if(t.getArena().getRepo().isEnteringAllowed() || e.getPlayer().hasPermission("wsk.bypass")) {
-						
+						TeamPlayer tp = null;
+						for(TeamPlayer tpl : t.getTeamMembers()) {
+							if(tpl.getPlayerName().equals(e.getPlayer().getName())) {
+								tp = tpl;
+							}
+						}
+						if(tp == null) {
+							return;
+						}
+						if(tp.getRole() == PlayerRole.CAPTAIN || tp.getRole() == PlayerRole.SPECIAL_FORCES || tp.getRole() == PlayerRole.DIED) {
+							e.setCancelled(false);
+						} else {
+							e.getPlayer().sendMessage(OpenWSK.S_PREFIX+"§cNur der Captain und die Spezialeinheiten können auf die andere Seite!");
+							e.getPlayer().teleport(e.getFrom());
+						}
 					} else {
 						e.getPlayer().teleport(e.getFrom());
 					}
@@ -66,7 +82,21 @@ public class PlayerMoveListener implements Listener {
 			if(t.getArena().getRepo().getTeam2Region().contains((int)e.getFrom().getX(), (int)e.getFrom().getY(), (int)e.getFrom().getZ())) {
 				if(t.getArena().getRepo().getTeam1Region().contains((int)e.getTo().getX(), (int)e.getTo().getY(), (int)e.getTo().getZ())) {
 					if(t.getArena().getRepo().isEnteringAllowed() || e.getPlayer().hasPermission("wsk.bypass")) {
-						
+						TeamPlayer tp = null;
+						for(TeamPlayer tpl : t.getTeamMembers()) {
+							if(tpl.getPlayerName().equals(e.getPlayer().getName())) {
+								tp = tpl;
+							}
+						}
+						if(tp == null) {
+							return;
+						}
+						if(tp.getRole() == PlayerRole.CAPTAIN || tp.getRole() == PlayerRole.SPECIAL_FORCES || tp.getRole() == PlayerRole.DIED) {
+							e.setCancelled(false);
+						} else {
+							e.getPlayer().sendMessage(OpenWSK.S_PREFIX+"§cNur der Captain und die Spezialeinheiten können auf die andere Seite!");
+							e.getPlayer().teleport(e.getFrom());
+						}
 					} else {
 						e.getPlayer().teleport(e.getFrom());
 					}

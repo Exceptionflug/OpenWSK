@@ -4,19 +4,30 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
+import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
+import org.bukkit.inventory.ItemStack;
 
 import com.sk89q.worldedit.regions.CuboidRegion;
+import com.sk89q.worldguard.bukkit.BukkitUtil;
 import com.sk89q.worldguard.protection.flags.DefaultFlag;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
+import de.pro_crafting.common.Point;
+import de.pro_crafting.common.Size;
+import de.pro_crafting.generator.criteria.SingleBlockCriteria;
+import de.pro_crafting.generator.job.SimpleJob;
+import de.pro_crafting.generator.provider.SingleBlockProvider;
 import net.thecobix.openwsk.events.ArenaStateChangedEvent;
 import net.thecobix.openwsk.events.PlayerJoinArenaEvent;
 import net.thecobix.openwsk.events.PlayerLeaveArenaEvent;
 import net.thecobix.openwsk.fight.FightScoreboard;
 import net.thecobix.openwsk.kitsystem.KitAPI;
 import net.thecobix.openwsk.main.OpenWSK;
+import net.thecobix.openwsk.team.PlayerRole;
 import net.thecobix.openwsk.team.Team;
 import net.thecobix.openwsk.team.TeamManager;
 import net.thecobix.openwsk.team.TeamPlayer;
@@ -119,6 +130,7 @@ public class Arena {
 					for(TeamPlayer tp : t.getTeamMembers()) {
 						Player p = Bukkit.getPlayerExact(tp.getPlayerName());
 						api.giveKit(repo.getEssentialsKitName(), p);
+						giveRoleKit(tp);
 					}
 				}
 			} else {
@@ -130,7 +142,108 @@ public class Arena {
 	}
 	
 	private void giveDefaultKitWithoutEssentials() {
-		//TODO
+		for(Team t : teams) {
+			for(TeamPlayer tp : t.getTeamMembers()) {
+				Player p = Bukkit.getPlayerExact(tp.getPlayerName());
+				p.getInventory().setArmorContents(null);
+				p.getInventory().setItem(0, new ItemStack(Material.STONE_PICKAXE, 1));
+				ItemStack clay = null;
+				if(t.getTeamName().equals("team1")) {
+					clay = new ItemStack(Material.STAINED_CLAY, 64, (byte) 14);
+				} else {
+					clay = new ItemStack(Material.STAINED_CLAY, 64, (byte) 11);
+				}
+				p.getInventory().setItem(1, clay);
+				p.getInventory().setItem(2, clay);
+				p.getInventory().setItem(3, new ItemStack(Material.BOW, 1));
+				p.getInventory().setItem(4, new ItemStack(Material.ARROW, 16));
+				p.getInventory().setItem(9, clay);
+				p.getInventory().setItem(18, clay);
+				p.getInventory().setItem(27, clay);
+				p.getInventory().setItem(10, clay);
+				p.getInventory().setItem(19, clay);
+				p.getInventory().setItem(28, clay);
+				giveRoleKit(tp);
+			}
+		}
+	}
+	
+	private void giveRoleKit(TeamPlayer tp) {
+		if(tp.getRole() == PlayerRole.CAPTAIN) {
+			Player p = Bukkit.getPlayerExact(tp.getPlayerName());
+			p.getInventory().addItem(new ItemStack(Material.STONE_SWORD, 1));
+			p.getInventory().setBoots(new ItemStack(Material.GOLD_BOOTS));
+			p.getInventory().setLeggings(new ItemStack(Material.GOLD_LEGGINGS));
+			p.getInventory().setChestplate(new ItemStack(Material.DIAMOND_CHESTPLATE));
+			p.getInventory().setHelmet(new ItemStack(Material.GOLD_HELMET));
+			p.getInventory().addItem(new ItemStack(Material.TNT, 64));
+			p.getInventory().addItem(new ItemStack(Material.TNT, 64));
+			p.getInventory().addItem(new ItemStack(Material.TNT, 64));
+			p.getInventory().addItem(new ItemStack(Material.TNT, 64));
+			p.getInventory().addItem(new ItemStack(Material.TNT, 64));
+			p.getInventory().addItem(new ItemStack(Material.TNT, 64));
+			p.getInventory().addItem(new ItemStack(Material.TNT, 64));
+			p.getInventory().addItem(new ItemStack(Material.TNT, 64));
+			p.getInventory().addItem(new ItemStack(Material.TNT, 64));
+			p.getInventory().addItem(new ItemStack(Material.TNT, 64));
+			p.getInventory().addItem(new ItemStack(Material.TNT, 64));
+			p.getInventory().addItem(new ItemStack(Material.TNT, 64));
+			p.getInventory().addItem(new ItemStack(Material.TNT, 64));
+			p.getInventory().addItem(new ItemStack(Material.TNT, 64));
+			p.getInventory().addItem(new ItemStack(Material.TNT, 64));
+			p.getInventory().addItem(new ItemStack(Material.TNT, 64));
+			p.getInventory().addItem(new ItemStack(Material.REDSTONE, 64));
+			p.getInventory().addItem(new ItemStack(Material.DIODE, 64));
+			p.getInventory().addItem(new ItemStack(Material.REDSTONE_COMPARATOR, 64));
+			p.getInventory().addItem(new ItemStack(Material.REDSTONE_TORCH_ON, 64));
+			p.getInventory().addItem(new ItemStack(Material.PISTON_BASE, 64));
+			p.getInventory().addItem(new ItemStack(Material.PISTON_STICKY_BASE, 64));
+			p.getInventory().addItem(new ItemStack(Material.SLIME_BLOCK, 64));
+			p.getInventory().addItem(new ItemStack(Material.REDSTONE_BLOCK, 64));
+		} else if(tp.getRole() == PlayerRole.SPECIAL_FORCES) {
+			Player p = Bukkit.getPlayerExact(tp.getPlayerName());
+			p.getInventory().addItem(new ItemStack(Material.STONE_SWORD, 1));
+			p.getInventory().setBoots(new ItemStack(Material.LEATHER_BOOTS));
+			p.getInventory().setLeggings(new ItemStack(Material.LEATHER_LEGGINGS));
+			p.getInventory().setChestplate(new ItemStack(Material.CHAINMAIL_CHESTPLATE));
+			p.getInventory().setHelmet(new ItemStack(Material.LEATHER_HELMET));
+		} if(tp.getRole() == PlayerRole.INGENIEUR) {
+			Player p = Bukkit.getPlayerExact(tp.getPlayerName());
+			p.getInventory().addItem(new ItemStack(Material.REDSTONE, 64));
+			p.getInventory().addItem(new ItemStack(Material.DIODE, 64));
+			p.getInventory().addItem(new ItemStack(Material.REDSTONE_COMPARATOR, 64));
+			p.getInventory().addItem(new ItemStack(Material.REDSTONE_TORCH_ON, 64));
+			p.getInventory().addItem(new ItemStack(Material.PISTON_BASE, 64));
+			p.getInventory().addItem(new ItemStack(Material.PISTON_STICKY_BASE, 64));
+			p.getInventory().addItem(new ItemStack(Material.SLIME_BLOCK, 64));
+			p.getInventory().addItem(new ItemStack(Material.REDSTONE_BLOCK, 64));
+		} if(tp.getRole() == PlayerRole.SCHUETZE) {
+			Player p = Bukkit.getPlayerExact(tp.getPlayerName());
+			p.getInventory().addItem(new ItemStack(Material.WOOD_SWORD, 1));
+			p.getInventory().addItem(new ItemStack(Material.TNT, 64));
+			p.getInventory().addItem(new ItemStack(Material.TNT, 64));
+			p.getInventory().addItem(new ItemStack(Material.TNT, 64));
+			p.getInventory().addItem(new ItemStack(Material.TNT, 64));
+			p.getInventory().addItem(new ItemStack(Material.TNT, 64));
+			p.getInventory().addItem(new ItemStack(Material.TNT, 64));
+			p.getInventory().addItem(new ItemStack(Material.TNT, 64));
+			p.getInventory().addItem(new ItemStack(Material.TNT, 64));
+			p.getInventory().addItem(new ItemStack(Material.TNT, 64));
+			p.getInventory().addItem(new ItemStack(Material.TNT, 64));
+			p.getInventory().addItem(new ItemStack(Material.TNT, 64));
+			p.getInventory().addItem(new ItemStack(Material.TNT, 64));
+			p.getInventory().addItem(new ItemStack(Material.TNT, 64));
+			p.getInventory().addItem(new ItemStack(Material.TNT, 64));
+			p.getInventory().addItem(new ItemStack(Material.TNT, 64));
+			p.getInventory().addItem(new ItemStack(Material.TNT, 64));
+		} if(tp.getRole() == PlayerRole.SOLDAT) {
+			Player p = Bukkit.getPlayerExact(tp.getPlayerName());
+			p.getInventory().setBoots(new ItemStack(Material.LEATHER_BOOTS));
+			p.getInventory().setLeggings(new ItemStack(Material.LEATHER_LEGGINGS));
+			p.getInventory().setChestplate(new ItemStack(Material.LEATHER_CHESTPLATE));
+			p.getInventory().setHelmet(new ItemStack(Material.LEATHER_HELMET));
+			p.getInventory().addItem(new ItemStack(Material.STONE_SWORD, 1));
+		}
 	}
 	
 	public void broadcastInside(String msg) {
@@ -213,8 +326,10 @@ public class Arena {
 	}
 	
 	public void setState(ArenaState state) {
-		Bukkit.getPluginManager().callEvent(new ArenaStateChangedEvent(this, state, this.state));
-		this.state = state;
+		if(state != this.state) {
+			Bukkit.getPluginManager().callEvent(new ArenaStateChangedEvent(this, state, this.state));
+			this.state = state;
+		}
 	}
 	
 	public ArenaState getState() {
@@ -267,4 +382,37 @@ public class Arena {
 		}
 	}
 	
+	public void prepareForNextFight() {
+		scoreboard.clearScoreboard();
+		waterRemover.stop();
+		state = ArenaState.IDLE;
+		teamManager = new TeamManager(this);
+		reseter = new ArenaReseter(this);
+		teams.clear();
+		teams.add(new Team("team1", this));
+		teams.add(new Team("team2", this));
+		repo.setEnteringAllowed(false);
+		this.setOpen(false);
+	}
+	
+	public void preparePlayerZ() {
+		for(Team t : getTeams()) {
+			for(TeamPlayer tp : t.getTeamMembers()) {
+				Player z = Bukkit.getPlayerExact(tp.getPlayerName());
+				z.setGameMode(GameMode.SURVIVAL);
+				z.setHealth(20.0);
+				z.setFoodLevel(20);
+				z.getInventory().clear();
+			}
+		}
+	}
+	
+	public void replace() {
+		World world = this.repo.getWorld();
+		CuboidRegion inner = getPlayGroundRegion();
+		Point origin = new Point(BukkitUtil.toLocation(world, inner.getMinimumPoint()));
+		Size size = new Size(inner.getWidth(), inner.getHeight(), inner.getLength());
+		OpenWSK.getPluginInstance().getGenerator().addJob(new SimpleJob(origin, size, world, null, new SingleBlockProvider(new SingleBlockCriteria(Material.OBSIDIAN), Material.TNT, (byte)0)));
+		OpenWSK.getPluginInstance().getGenerator().addJob(new SimpleJob(origin, size, world, null, new SingleBlockProvider(new SingleBlockCriteria(Material.BEDROCK), Material.SLIME_BLOCK, (byte)0)));
+	}
 }

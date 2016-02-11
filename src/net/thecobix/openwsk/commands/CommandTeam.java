@@ -1,9 +1,15 @@
 package net.thecobix.openwsk.commands;
 
-import java.nio.charset.IllegalCharsetNameException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import de.pro_crafting.commandframework.Command;
 import de.pro_crafting.commandframework.CommandArgs;
@@ -128,10 +134,8 @@ public class CommandTeam {
 			t.addPlayer(z, true);
 			if(t.getTeamName().equals("team1")) {
 				z.teleport(a.getRepo().getTeam1Warp());
-				z.setDisplayName("§c"+p.getName());
 			} else {
 				z.teleport(a.getRepo().getTeam2Warp());
-				z.setDisplayName("§9"+p.getName());
 			}
 			z.sendMessage(OpenWSK.S_PREFIX+"§6Teammanagement:");
 			z.sendMessage("§8/wsk team invite <Name> - §6Lädt einen Spieler in dein Team ein.");
@@ -200,12 +204,10 @@ public class CommandTeam {
 				tz.getArena().getScoreboard().addTeamMember(p, tz);
 				if(tz.getTeamName().equals("team1")) {
 					p.teleport(tz.getArena().getRepo().getTeam1Warp());
-					p.setDisplayName("§c"+p.getName());
 				} else {
 					p.teleport(tz.getArena().getRepo().getTeam2Warp());
-					p.setDisplayName("§9"+p.getName());
 				}
-				p.sendMessage(OpenWSK.S_PREFIX+"§aDu bist standartmäßig ein §6Soldat §a. Wechsle deine Rolle mit §6/wsk team changerole§a.");
+				p.sendMessage(OpenWSK.S_PREFIX+"§aDu bist standartmäßig ein §6Schütze §a. Wechsle deine Rolle mit §6/wsk team changerole§a.");
 			} else {
 				OpenWSK.getPluginInstance().getInvitationSystem().invitations.remove(i);
 				p.sendMessage(OpenWSK.S_PREFIX+"§cDu konntest nicht hinzugefügt werden!");
@@ -293,6 +295,71 @@ public class CommandTeam {
 				PreRunningTimer prt = new PreRunningTimer(t.getArena());
 				prt.preRunningTimer();
 			}
+		}
+	}
+	
+	@Command(name="wsk.team.changerole", description="Ändert deine Rolle", usage="/wsk team changerole")
+	public void changeRole(CommandArgs args) {
+		if(args.isPlayer()) {
+			Player p = args.getPlayer();
+			Team t = OpenWSK.getPluginInstance().getArenaManager().getTeamFromPlayer(p);
+			if(t == null) {
+				p.sendMessage(OpenWSK.S_PREFIX+"§cDu bist in keinem Team.");
+				return;
+			}
+			if(t.getTeamLeader().equals(p.getName())) {
+				p.sendMessage(OpenWSK.S_PREFIX+"§cDu bist Captain. Du kannst keine andere Rolle übernehmen.");
+				return;
+			}
+			Inventory inv = Bukkit.createInventory(null, 27, "§aEinheiten");
+			ItemStack spf = new ItemStack(Material.ENDER_PEARL);
+			ItemMeta spf_meta = spf.getItemMeta();
+			spf_meta.setDisplayName("§aSpezialeinheit");
+			List<String> spf_lore = new ArrayList<>();
+			spf_lore.add("§7Als Spezialeinheit kannst du das");
+			spf_lore.add("§7gegnerische Schiff entern.");
+			spf_meta.setLore(spf_lore);
+			spf_meta.addEnchant(Enchantment.ARROW_INFINITE, 10, true);
+			spf.setItemMeta(spf_meta);
+			spf.setAmount(1);
+			inv.setItem(0, spf);
+			
+			ItemStack ing = new ItemStack(Material.REDSTONE);
+			ItemMeta ing_meta = ing.getItemMeta();
+			ing_meta.setDisplayName("§cIngenieur");
+			List<String> ing_lore = new ArrayList<>();
+			ing_lore.add("§7Als Ingenieur musst du helfen");
+			ing_lore.add("§7Kanonen zu reparieren.");
+			ing_meta.setLore(ing_lore);
+			ing_meta.addEnchant(Enchantment.ARROW_INFINITE, 10, true);
+			ing.setItemMeta(ing_meta);
+			ing.setAmount(1);
+			inv.setItem(1, ing);
+			
+			ItemStack sol = new ItemStack(Material.STONE_SWORD);
+			ItemMeta sol_meta = sol.getItemMeta();
+			sol_meta.setDisplayName("§5Soldat");
+			List<String> sol_lore = new ArrayList<>();
+			sol_lore.add("§7Soldaten patrouillieren das eigene");
+			sol_lore.add("§7Schiff und töten Eindringlinge.");
+			sol_meta.setLore(sol_lore);
+			sol_meta.addEnchant(Enchantment.ARROW_INFINITE, 10, true);
+			sol.setItemMeta(sol_meta);
+			sol.setAmount(1);
+			inv.setItem(2, sol);
+			
+			ItemStack sag = new ItemStack(Material.TNT);
+			ItemMeta sag_meta = sag.getItemMeta();
+			sag_meta.setDisplayName("§6Schütze");
+			List<String> sag_lore = new ArrayList<>();
+			sag_lore.add("§7Schützen beladen und feuern");
+			sag_lore.add("§7Kanonen auf den Gegner ab.");
+			sag_meta.setLore(sag_lore);
+			sag_meta.addEnchant(Enchantment.ARROW_INFINITE, 10, true);
+			sag.setItemMeta(sag_meta);
+			sag.setAmount(1);
+			inv.setItem(3, sag);
+			p.openInventory(inv);
 		}
 	}
 	

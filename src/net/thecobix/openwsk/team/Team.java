@@ -93,9 +93,9 @@ public class Team {
 				sucken = tp;
 			}
 		}
-		Player z = Bukkit.getPlayerExact(name);
-		if(z != null) {
-			z.setDisplayName(z.getName());
+		if(sucken.getRole() == PlayerRole.CAPTAIN) {
+			arena.broadcastInside(OpenWSK.S_PREFIX+"§cDer Captain von "+teamName+" hat das Team verlassen!");
+			teamLeader = null;
 		}
 		this.teamMembers.remove(sucken);
 	}
@@ -115,15 +115,15 @@ public class Team {
 			return false;
 		}
 		TeamPlayer tp = new TeamPlayer(name);
-		tp.setRole(PlayerRole.SOLDAT);
+		tp.setRole(PlayerRole.SCHUETZE);
 		if(isLeader) {
 			tp.setRole(PlayerRole.CAPTAIN);
 			teamLeader = name;
 			for(TeamPlayer d : getTeamMembers()) {
 				if(d.getRole() == PlayerRole.CAPTAIN) {
-					d.setRole(PlayerRole.SOLDAT);
+					d.setRole(PlayerRole.SCHUETZE);
 					Player z = Bukkit.getPlayerExact(d.getPlayerName());
-					z.sendMessage(OpenWSK.S_PREFIX+"§cDu wurdest zum §6Soldat §cdegradiert.");
+					z.sendMessage(OpenWSK.S_PREFIX+"§cDu wurdest zum §6Schütze §cdegradiert.");
 				}
 			}
 		}

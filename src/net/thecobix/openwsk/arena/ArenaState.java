@@ -19,6 +19,6 @@ package net.thecobix.openwsk.arena;
  */
 public enum ArenaState {
 
-	SETUP, PRERUNNING, RUNNING, IDLE, RESET;
+	SETUP, PRERUNNING, RUNNING, IDLE, RESET, SPECTATE;
 	
 }

@@ -23,6 +23,8 @@ import de.pro_crafting.generator.job.Job;
 import de.pro_crafting.generator.job.SimpleJob;
 import de.pro_crafting.generator.provider.SingleBlockProvider;
 import net.thecobix.openwsk.events.ArenaStateChangedEvent;
+import net.thecobix.openwsk.fight.Fight;
+import net.thecobix.openwsk.fight.FightManager;
 import net.thecobix.openwsk.main.OpenWSK;
 
 /*
@@ -107,6 +109,17 @@ public class ArenaReseter implements Listener, JobStateChangedCallback {
 		removeDrops(this.arena.getRepo().getWorld());
 		if(this.arena.getState() == ArenaState.RESET) {
 			this.arena.setState(ArenaState.IDLE);
+			this.arena.prepareForNextFight();
+			Fight f = null;
+			for(Fight fi : FightManager.fights) {
+				if(fi.getArena().getArenaName().equals(this.arena.getArenaName())) {
+					f = fi;
+				}
+			}
+			if(f == null) {
+				return;
+			}
+			FightManager.fights.remove(f);
 		}
 	}
 	
