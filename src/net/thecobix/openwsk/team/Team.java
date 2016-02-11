@@ -30,7 +30,7 @@ public class Team {
 	private String teamName;
 	private Arena arena;
 	private ArrayList<TeamPlayer> teamMembers = new ArrayList<TeamPlayer>();
-	private String teamLeader;
+	public String teamLeader;
 	private int maxTeamSize = 10;
 	private boolean isReady = false;
 	

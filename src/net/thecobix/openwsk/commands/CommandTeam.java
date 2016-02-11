@@ -380,6 +380,7 @@ public class CommandTeam {
 			if(args.getArgs().length == 0) {
 				for(Team t : a.getTeams()) {
 					t.getTeamMembers().clear();
+					t.teamLeader = null;
 				}
 				p.sendMessage(OpenWSK.S_PREFIX+"§aDu hast beide Teams geleert");
 				a.getScoreboard().clearScoreboard();
@@ -390,12 +391,14 @@ public class CommandTeam {
 						a.getScoreboard().removeTeamMember(tp, "team1");
 					}
 					a.getTeam1().getTeamMembers().clear();
+					a.getTeam1().teamLeader = null;
 					p.sendMessage(OpenWSK.S_PREFIX+"§aDu hast §cTeam1§a geleert");
 				} else {
 					for(TeamPlayer tp : a.getTeam1().getTeamMembers()) {
 						a.getScoreboard().removeTeamMember(tp, "team2");
 					}
 					a.getTeam2().getTeamMembers().clear();
+					a.getTeam2().teamLeader = null;
 					p.sendMessage(OpenWSK.S_PREFIX+"§aDu hast §9Team2§a geleert");
 				}
 			}

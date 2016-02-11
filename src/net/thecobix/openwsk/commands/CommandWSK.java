@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import de.pro_crafting.commandframework.Command;
 import de.pro_crafting.commandframework.CommandArgs;
 import net.thecobix.openwsk.arena.Arena;
+import net.thecobix.openwsk.arena.ArenaState;
 import net.thecobix.openwsk.events.FightQuitEvent;
 import net.thecobix.openwsk.fight.Fight;
 import net.thecobix.openwsk.fight.FightManager;
@@ -118,6 +119,10 @@ public class CommandWSK {
 			}
 			if(f == null) {
 				p.sendMessage(OpenWSK.S_PREFIX+"§cHier läuft kein Kampf.");
+				return;
+			}
+			if(a.getState() != ArenaState.RUNNING) {
+				p.sendMessage(OpenWSK.S_PREFIX+"Hier läuft kein Kampf.");
 				return;
 			}
 			if(args.getArgs().length == 0) {

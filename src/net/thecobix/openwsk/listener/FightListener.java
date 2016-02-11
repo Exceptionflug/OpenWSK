@@ -38,8 +38,8 @@ public class FightListener implements Listener {
 			return;
 		}
 		Player p = (Player) e.getEntity();
-		for(Fight fi : FightManager.fights) {
-			for(Team t : fi.getArena().getTeams()) {
+		for(Arena a : OpenWSK.getPluginInstance().getArenaManager().loadedArenas) {
+			for(Team t : a.getTeams()) {
 				for(TeamPlayer tp : t.getTeamMembers()) {
 					if(tp.getPlayerName().equals(p.getName())) {
 						if(t.getArena().getState() != ArenaState.RUNNING) {
