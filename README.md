@@ -5,8 +5,9 @@ Dieses Plugin wird WarShip Kämpfe auf Bukkit Servern erlauben.
 Inspiriert durch das WGK Plugin.
 
 Funktionen:
-  - Lokales Configsystem oder MySQL
-  - WorldEdit und WorldGuard Integration
+  - Lokales Configsystem
+  - WorldGuard Integration
+  - Unterstützung der verschiedenen Spielerrollen
   
 Thank You list:
   - Postremus: CommandFramework
