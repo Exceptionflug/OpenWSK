@@ -118,22 +118,21 @@ public class WaterRemoveSystem implements Listener {
 	 */
 	public void collectBlocks(Block anchor, List<Block> collected, List<Block> visitedBlocks)
 	{
-		try{
-			if(!(anchor.getType() == Material.WATER || anchor.getType() == Material.STATIONARY_WATER)) return;
-			
-			if (visitedBlocks.contains(anchor))return;
-			visitedBlocks.add(anchor);
-			if(anchor.getType() == Material.STATIONARY_WATER)
-			{
-			   collected.add(anchor);
-			}
-			
-			collectBlocks(anchor.getRelative(BlockFace.UP), collected, visitedBlocks);
-			collectBlocks(anchor.getRelative(BlockFace.NORTH), collected, visitedBlocks);
-			collectBlocks(anchor.getRelative(BlockFace.EAST), collected, visitedBlocks);
-			collectBlocks(anchor.getRelative(BlockFace.SOUTH), collected, visitedBlocks);
-			collectBlocks(anchor.getRelative(BlockFace.WEST), collected, visitedBlocks);
-		}catch(StackOverflowError e) {
+		if(!(anchor.getType() == Material.WATER || anchor.getType() == Material.STATIONARY_WATER)) return;
+		
+		if (visitedBlocks.contains(anchor))return;
+		visitedBlocks.add(anchor);
+		if(anchor.getType() == Material.STATIONARY_WATER)
+		{
+		   collected.add(anchor);
 		}
+		if(visitedBlocks.size() > 50) {
+			return;
+		}
+		collectBlocks(anchor.getRelative(BlockFace.UP), collected, visitedBlocks);
+		collectBlocks(anchor.getRelative(BlockFace.NORTH), collected, visitedBlocks);
+		collectBlocks(anchor.getRelative(BlockFace.EAST), collected, visitedBlocks);
+		collectBlocks(anchor.getRelative(BlockFace.SOUTH), collected, visitedBlocks);
+		collectBlocks(anchor.getRelative(BlockFace.WEST), collected, visitedBlocks);
 	}
 }

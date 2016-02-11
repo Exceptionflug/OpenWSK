@@ -412,7 +412,7 @@ public class Arena {
 		CuboidRegion inner = getPlayGroundRegion();
 		Point origin = new Point(BukkitUtil.toLocation(world, inner.getMinimumPoint()));
 		Size size = new Size(inner.getWidth(), inner.getHeight(), inner.getLength());
-		OpenWSK.getPluginInstance().getGenerator().addJob(new SimpleJob(origin, size, world, null, new SingleBlockProvider(new SingleBlockCriteria(Material.OBSIDIAN), Material.TNT, (byte)0)));
-		OpenWSK.getPluginInstance().getGenerator().addJob(new SimpleJob(origin, size, world, null, new SingleBlockProvider(new SingleBlockCriteria(Material.BEDROCK), Material.SLIME_BLOCK, (byte)0)));
+		OpenWSK.getPluginInstance().getGenerator().addJob(new SimpleJob(origin, size, world, null, new SingleBlockProvider(new SingleBlockCriteria(Material.OBSIDIAN), Material.TNT, (byte)0), false));
+		OpenWSK.getPluginInstance().getGenerator().addJob(new SimpleJob(origin, size, world, null, new SingleBlockProvider(new SingleBlockCriteria(Material.BEDROCK), Material.SLIME_BLOCK, (byte)0), false));
 	}
 }
