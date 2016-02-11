@@ -9,6 +9,7 @@ import com.sk89q.worldguard.protection.flags.StateFlag.State;
 
 import net.thecobix.openwsk.arena.Arena;
 import net.thecobix.openwsk.arena.ArenaState;
+import net.thecobix.openwsk.events.FightQuitEvent;
 import net.thecobix.openwsk.main.OpenWSK;
 import net.thecobix.openwsk.team.Team;
 import net.thecobix.openwsk.team.TeamPlayer;
@@ -77,6 +78,17 @@ public class PreRunningTimer {
 					
 				case 0:
 					arena.setState(ArenaState.RUNNING);
+					for(Fight fi : FightManager.fights) {
+						if(fi.getArena().getArenaName().equals(arena.getArenaName())) {
+							if(arena.getState() == ArenaState.RUNNING) {
+								for(Team t : arena.getTeams()) {
+									if(t.getTeamMembers().isEmpty()) {
+										Bukkit.getPluginManager().callEvent(new FightQuitEvent(fi, "§2Alle Teammitglieder von "+t.getTeamName()+" sind offline!"));
+									}
+								}
+							}
+						}
+					}
 					arena.broadcastInside("§6Das Entern wird in 60 Sekunden erlaubt.");
 					break;
 					
