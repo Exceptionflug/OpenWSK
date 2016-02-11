@@ -17,16 +17,16 @@ public class InventoryListener implements Listener {
 	@EventHandler
 	public void click(InventoryClickEvent e) {
 		Player p = (Player) e.getWhoClicked();
-		Team t = OpenWSK.getPluginInstance().getArenaManager().getTeamFromPlayer(p);
-		if(t == null) {
-			p.closeInventory();
-			p.sendMessage(OpenWSK.S_PREFIX+"§cDu bist in keinem Team.");
-			return;
-		}
 		if(e.getInventory().getName() == null) {
 			return;
 		}
 		if(e.getClickedInventory().getName().equals("§aEinheiten")) {
+			Team t = OpenWSK.getPluginInstance().getArenaManager().getTeamFromPlayer(p);
+			if(t == null) {
+				p.closeInventory();
+				p.sendMessage(OpenWSK.S_PREFIX+"§cDu bist in keinem Team.");
+				return;
+			}
 			TeamPlayer tp = null;
 			for(TeamPlayer tpl : t.getTeamMembers()) {
 				if(tpl.getPlayerName().equals(p.getName())) {
