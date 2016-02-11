@@ -19,6 +19,7 @@ import net.thecobix.openwsk.fight.PreRunningTimer;
 import net.thecobix.openwsk.invitation.Invitation;
 import net.thecobix.openwsk.main.OpenWSK;
 import net.thecobix.openwsk.team.Team;
+import net.thecobix.openwsk.team.TeamPlayer;
 
 public class CommandTeam {
 
@@ -260,6 +261,10 @@ public class CommandTeam {
 				p.sendMessage(OpenWSK.S_PREFIX+"§cNur der Captain kann Änderungen am Team vornehmen.");
 				return;
 			}
+			if(p.getName().equals(z.getName())) {
+				p.sendMessage(OpenWSK.S_PREFIX+"§cDu kannst dich nicht selbst kicken!");
+				return;
+			}
 			if(t.getArena().getArenaName().equals(tz.getArena().getArenaName()) && t.getTeamName().equals(tz.getTeamName())) {
 				z.sendMessage(OpenWSK.S_PREFIX+"§cDu wurdest aus dem Team geworfen.");
 				t.removePlayer(z.getName());
@@ -360,6 +365,40 @@ public class CommandTeam {
 			sag.setAmount(1);
 			inv.setItem(3, sag);
 			p.openInventory(inv);
+		}
+	}
+	
+	@Command(name="wsk.team.clear", description="Leert ein oder beide Teams", usage="/wsk team clear [team1,team2]", permission="wsk.team.clear")
+	public void clear(CommandArgs args) {
+		if(args.isPlayer()) {
+			Player p = args.getPlayer();
+			Arena a = OpenWSK.getPluginInstance().getArenaManager().getArenaFromPlayer(p);
+			if(a == null) {
+				p.sendMessage(OpenWSK.S_PREFIX+"§cDu stehst in keiner Arena!");
+				return;
+			}
+			if(args.getArgs().length == 0) {
+				for(Team t : a.getTeams()) {
+					t.getTeamMembers().clear();
+				}
+				p.sendMessage(OpenWSK.S_PREFIX+"§aDu hast beide Teams geleert");
+				a.getScoreboard().clearScoreboard();
+				a.getScoreboard().initScoreboard();
+			} else {
+				if(args.getArgs(0).equalsIgnoreCase("team1")) {
+					for(TeamPlayer tp : a.getTeam1().getTeamMembers()) {
+						a.getScoreboard().removeTeamMember(tp, "team1");
+					}
+					a.getTeam1().getTeamMembers().clear();
+					p.sendMessage(OpenWSK.S_PREFIX+"§aDu hast §cTeam1§a geleert");
+				} else {
+					for(TeamPlayer tp : a.getTeam1().getTeamMembers()) {
+						a.getScoreboard().removeTeamMember(tp, "team2");
+					}
+					a.getTeam2().getTeamMembers().clear();
+					p.sendMessage(OpenWSK.S_PREFIX+"§aDu hast §9Team2§a geleert");
+				}
+			}
 		}
 	}
 	
