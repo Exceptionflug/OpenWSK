@@ -17,7 +17,8 @@ import net.thecobix.openwsk.team.TeamPlayer;
 public class PreRunningTimer {
 
 	private Arena arena;
-	private int time = 61;
+	private int time = 91;
+	public int task;
 	
 	public PreRunningTimer(Arena arena) {
 		this.arena = arena;
@@ -37,13 +38,17 @@ public class PreRunningTimer {
 		arena.broadcastInside("§eVersus");
 		arena.broadcastInside("§9[Team2] "+sucken2.toString().replace("[", "").replace("]", ""));
 		arena.tpToTeamWarp();
-		int task = Bukkit.getScheduler().scheduleSyncRepeatingTask(OpenWSK.getPluginInstance(), new Runnable() {
+		task = Bukkit.getScheduler().scheduleSyncRepeatingTask(OpenWSK.getPluginInstance(), new Runnable() {
 
 			@Override
 			public void run() {
 				
 				time --;
 				switch (time) {
+				case 90:
+					arena.broadcastInside("§690 Sekunden bis die Schlacht beginnt.");
+					break;
+					
 				case 60:
 					arena.broadcastInside("§660 Sekunden bis die Schlacht beginnt.");
 					break;
@@ -83,7 +88,12 @@ public class PreRunningTimer {
 							if(arena.getState() == ArenaState.RUNNING) {
 								for(Team t : arena.getTeams()) {
 									if(t.getTeamMembers().isEmpty()) {
-										Bukkit.getPluginManager().callEvent(new FightQuitEvent(fi, "§2Alle Teammitglieder von "+t.getTeamName()+" sind offline!"));
+										if(t.getTeamName().equals("team1")) {
+											Bukkit.getPluginManager().callEvent(new FightQuitEvent(fi, "§2Alle Teammitglieder von "+t.getTeamName()+" sind offline!", fi.getArena().getTeam2(), t));
+										} else {
+											Bukkit.getPluginManager().callEvent(new FightQuitEvent(fi, "§2Alle Teammitglieder von "+t.getTeamName()+" sind offline!", fi.getArena().getTeam1(), t));
+										}
+										Bukkit.getScheduler().cancelTask(task);
 									}
 								}
 							}
@@ -139,9 +149,13 @@ public class PreRunningTimer {
 				case -60:
 					arena.broadcastInside("§aDas Entern ist nun erlaubt");
 					arena.getRepo().setEnteringAllowed(true);
+					Bukkit.getScheduler().cancelTask(task);
 					break;
 					
 				default:
+					if(arena.getState() != ArenaState.RUNNING) {
+						Bukkit.getScheduler().cancelTask(task);
+					}
 					break;
 				}
 				

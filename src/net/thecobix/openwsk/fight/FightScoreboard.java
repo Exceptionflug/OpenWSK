@@ -105,14 +105,23 @@ public class FightScoreboard implements Listener {
 		this.teamBlue = this.board.registerNewTeam("team_blue");
 		this.teamBlue.setDisplayName("teamblue");
 		this.teamBlue.setPrefix("§9");
+		
+		this.teamRed.addEntry("Keine Mitglieder");
+		this.teamBlue.addEntry("Keine Mitglieder");
 	}
 	
 	public void removeTeamMember(TeamPlayer member, String teamName) {
 		initScoreboard();
 		if(teamName.equals("team1")) {
 			this.teamRed.removeEntry(member.getPlayerName());
+			if(this.teamRed.getSize() == 0) {
+				this.teamRed.addEntry("Keine Mitglieder");
+			}
 		} else {
 			this.teamBlue.removeEntry(member.getPlayerName());
+			if(this.teamBlue.getSize() == 0) {
+				this.teamBlue.addEntry("Keine Mitglieder");
+			}
 		}
 		this.board.resetScores(member.getPlayerName());
 	}
@@ -120,9 +129,11 @@ public class FightScoreboard implements Listener {
 	public void addTeamMember(Player p, net.thecobix.openwsk.team.Team t) {
 		initScoreboard();
 		if(t.getTeamName().equals("team1")) {
+			this.teamRed.removeEntry("Keine Mitglieder");
 			this.teamRed.addEntry(p.getName());
 			this.board.getObjective("Team1").getScore(p.getName()).setScore(20);
 		} else {
+			this.teamBlue.removeEntry("Keine Mitglieder");
 			this.teamBlue.addEntry(p.getName());
 			this.board.getObjective("Team2").getScore(p.getName()).setScore(20);
 		}

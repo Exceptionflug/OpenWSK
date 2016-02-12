@@ -126,12 +126,12 @@ public class CommandWSK {
 				return;
 			}
 			if(args.getArgs().length == 0) {
-				Bukkit.getPluginManager().callEvent(new FightQuitEvent(f, "§6Kampf beendet - Unentschieden"));
+				Bukkit.getPluginManager().callEvent(new FightQuitEvent(f, "§6Kampf beendet - Unentschieden", null, null));
 			} else {
 				if(args.getArgs(0).equalsIgnoreCase("team1")) {
-					Bukkit.getPluginManager().callEvent(new FightQuitEvent(f, "§cKampf beendet - Team1 gewinnt (Rot)"));
+					Bukkit.getPluginManager().callEvent(new FightQuitEvent(f, "§cKampf beendet - Team1 gewinnt (Rot)", a.getTeam1(), a.getTeam2()));
 				} else if(args.getArgs(0).equalsIgnoreCase("team2")) {
-					Bukkit.getPluginManager().callEvent(new FightQuitEvent(f, "§9Kampf beendet - Team2 gewinnt (Blau)"));
+					Bukkit.getPluginManager().callEvent(new FightQuitEvent(f, "§9Kampf beendet - Team2 gewinnt (Blau)", a.getTeam2(), a.getTeam1()));
 				} else {
 					p.sendMessage(OpenWSK.S_PREFIX+"§bBenutzung: /wsk quit [team1,team2]");
 				}

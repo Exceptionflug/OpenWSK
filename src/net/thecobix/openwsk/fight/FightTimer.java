@@ -17,7 +17,7 @@ public class FightTimer implements Runnable {
 	public void run() {
 		
 		if(this.time == 0) {
-			Bukkit.getPluginManager().callEvent(new FightQuitEvent(fight, "Zeit abgelaufen - Unentschieden"));
+			Bukkit.getPluginManager().callEvent(new FightQuitEvent(fight, "Zeit abgelaufen - Unentschieden", null, null));
 		}
 		this.time -= 1;
 		fight.getArena().getScoreboard().updateTime(this.time);

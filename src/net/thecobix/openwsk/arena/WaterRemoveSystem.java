@@ -127,6 +127,7 @@ public class WaterRemoveSystem implements Listener {
 		   collected.add(anchor);
 		}
 		if(visitedBlocks.size() > 50) {
+			collected.clear();
 			return;
 		}
 		collectBlocks(anchor.getRelative(BlockFace.UP), collected, visitedBlocks);

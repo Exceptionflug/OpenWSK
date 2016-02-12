@@ -4,6 +4,7 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 import net.thecobix.openwsk.fight.Fight;
+import net.thecobix.openwsk.team.Team;
 
 public class FightQuitEvent extends Event {
 	
@@ -11,13 +12,15 @@ public class FightQuitEvent extends Event {
 	
 	private String reason;
 	private Fight fight;
+	private Team winner;
+	private Team looser;
 
 	@Override
 	public HandlerList getHandlers() {
 		return handlers;
 	}
 	
-	public FightQuitEvent(Fight fight, String reason) {
+	public FightQuitEvent(Fight fight, String reason, Team winner, Team looser) {
 		this.fight = fight;
 		this.reason = reason;
 	}

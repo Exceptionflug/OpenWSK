@@ -92,6 +92,7 @@ public class ArenaListener implements Listener {
 		} else if(e.getOldState() == ArenaState.RUNNING && e.getNewState() == ArenaState.SPECTATE) {
 			for(Fight f : FightManager.fights) {
 				if(f.getArena().getArenaName().equals(e.getArena().getArenaName())) {
+					f.stopTimer();
 					FightManager.spectate(f);
 				}
 			}

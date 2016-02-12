@@ -105,10 +105,17 @@ public class Team {
 			if(fi.getArena().getArenaName().equals(arena.getArenaName())) {
 				if(arena.getState() == ArenaState.RUNNING) {
 					if(teamMembers.isEmpty()) {
-						Bukkit.getPluginManager().callEvent(new FightQuitEvent(fi, "§2Alle Teammitglieder von "+teamName+" sind offline!"));
+						if(teamName.equals("team1")) {
+							Bukkit.getPluginManager().callEvent(new FightQuitEvent(fi, "§2Alle Teammitglieder von "+teamName+" sind offline!", arena.getTeam2(), this));
+						} else {
+							Bukkit.getPluginManager().callEvent(new FightQuitEvent(fi, "§2Alle Teammitglieder von "+teamName+" sind offline!", arena.getTeam1(), this));
+						}
 					}
 				}
 			}
+		}
+		if(arena.getState() != ArenaState.IDLE) {
+			arena.getScoreboard().removeTeamMember(sucken, teamName);
 		}
 		this.teamMembers.remove(sucken);
 	}

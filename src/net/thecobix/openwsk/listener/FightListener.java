@@ -119,7 +119,11 @@ public class FightListener implements Listener {
 			return;
 		}
 		String win = t.getTeamName().equals("team1") ? "team2 hat gewonnen!" : "team1 hat gewonnen!";
-		Bukkit.getPluginManager().callEvent(new FightQuitEvent(fi, "§2Alle tot - "+t.getTeamName()+" hat verloren! "+win));
+		if(t.getTeamName().equals("team1")) {
+			Bukkit.getPluginManager().callEvent(new FightQuitEvent(fi, "§2Alle tot - "+t.getTeamName()+" hat verloren! "+win, fi.getArena().getTeam2(), t));
+		} else {
+			Bukkit.getPluginManager().callEvent(new FightQuitEvent(fi, "§2Alle tot - "+t.getTeamName()+" hat verloren! "+win, fi.getArena().getTeam1(), t));
+		}
 	}
 	
 	private void endFightNoCaptain(Team looserPack, Player lastDied) {
@@ -136,7 +140,11 @@ public class FightListener implements Listener {
 			return;
 		}
 		String win = looserPack.getTeamName().equals("team1") ? "team2 hat gewonnen!" : "team1 hat gewonnen!";
-		Bukkit.getPluginManager().callEvent(new FightQuitEvent(fi, "§2Captain tot - "+looserPack.getTeamName()+" hat verloren! "+win));
+		if(looserPack.getTeamName().equals("team1")) {
+			Bukkit.getPluginManager().callEvent(new FightQuitEvent(fi, "§2Captain tot - "+looserPack.getTeamName()+" hat verloren! "+win, fi.getArena().getTeam2(), looserPack));
+		} else {
+			Bukkit.getPluginManager().callEvent(new FightQuitEvent(fi, "§2Captain tot - "+looserPack.getTeamName()+" hat verloren! "+win, fi.getArena().getTeam1(), looserPack));
+		}
 	}
 	
 	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled=true)
