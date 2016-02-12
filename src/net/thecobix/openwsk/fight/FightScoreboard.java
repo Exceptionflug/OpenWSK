@@ -209,13 +209,16 @@ public class FightScoreboard implements Listener {
 	}
 
 	public void updateEntering(boolean allowed) {
-		String sco = allowed ? "§aEntern erlaubt" : "§cKein Entern";
-		if(allowed) {
-			this.board.resetScores("§cKein Entern");
-			this.board.getObjective("Info").getScore(sco).setScore(1);
-		} else {
-			this.board.resetScores("§aEntern erlaubt");
-			this.board.getObjective("Info").getScore(sco).setScore(1);
+		try{
+			String sco = allowed ? "§aEntern erlaubt" : "§cKein Entern";
+			if(allowed) {
+				this.board.resetScores("§cKein Entern");
+				this.board.getObjective("Info").getScore(sco).setScore(1);
+			} else {
+				this.board.resetScores("§aEntern erlaubt");
+				this.board.getObjective("Info").getScore(sco).setScore(1);
+			}
+		}catch(NullPointerException e) {
 		}
 	}
 	

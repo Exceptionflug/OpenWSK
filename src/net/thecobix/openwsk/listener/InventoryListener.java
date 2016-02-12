@@ -17,6 +17,11 @@ public class InventoryListener implements Listener {
 	@EventHandler
 	public void click(InventoryClickEvent e) {
 		Player p = (Player) e.getWhoClicked();
+		try{
+			e.getSlot();
+		}catch(NullPointerException r) {
+			return;
+		}
 		if(e.getInventory().getName() == null) {
 			return;
 		}
@@ -53,7 +58,7 @@ public class InventoryListener implements Listener {
 				tp.setRole(PlayerRole.SCHUETZE);
 				p.sendMessage(OpenWSK.S_PREFIX+"§aDu wirst als Schütze Kämpfen");
 			}
-			
+			e.setCancelled(true);
 		}
 	}
 }

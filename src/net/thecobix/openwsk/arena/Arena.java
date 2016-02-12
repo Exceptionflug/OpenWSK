@@ -387,7 +387,6 @@ public class Arena {
 		waterRemover.stop();
 		state = ArenaState.IDLE;
 		teamManager = new TeamManager(this);
-		reseter = new ArenaReseter(this);
 		teams.clear();
 		teams.add(new Team("team1", this));
 		teams.add(new Team("team2", this));

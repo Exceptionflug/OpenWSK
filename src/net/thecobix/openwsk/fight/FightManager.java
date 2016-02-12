@@ -45,6 +45,7 @@ public class FightManager {
 						z.teleport(f.getArena().getRepo().getSpectatorWarp());
 						z.getInventory().clear();
 						f.getArena().setState(ArenaState.RESET);
+						FightManager.fights.remove(f);
 					}
 				}
 				

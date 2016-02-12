@@ -54,12 +54,14 @@ public class CommandWSK {
 			p.sendMessage("§8/wsk - §6Zeigt Informationen über das Plugin an.");
 			p.sendMessage("§8/wsk help - §6Zeigt eine Liste mit Befehlen.");
 			p.sendMessage("§8/wsk team - §6Zeigt eine Liste mit Teambefehlen.");
+			p.sendMessage("§8/wsk fights - §6Zeigt alle laufenden Kämpfe an.");
 			p.sendMessage("§8/wsk credits - §6Mitwirkende und Danksagungen.");
 		} else if(permlevel == 1) {
 			p.sendMessage(OpenWSK.S_PREFIX+"§8--- §6Open§bWSK §8---");
 			p.sendMessage("§8/wsk - §6Zeigt Informationen über das Plugin an.");
 			p.sendMessage("§8/wsk help - §6Zeigt eine Liste mit Befehlen.");
 			p.sendMessage("§8/wsk team - §6Zeigt eine Liste mit Teambefehlen.");
+			p.sendMessage("§8/wsk fights - §6Zeigt alle laufenden Kämpfe an.");
 			p.sendMessage("§8/wsk arena - §6Zeigt eine Liste mit Arenabefehlen.");
 			p.sendMessage("§8/wsk quit [§cteam1§8, §9team2§8] - §6Beendet einen Kampf");
 			p.sendMessage("§8/wsk credits - §6Mitwirkende und Danksagungen.");
@@ -68,6 +70,7 @@ public class CommandWSK {
 			p.sendMessage("§8/wsk - §6Zeigt Informationen über das Plugin an.");
 			p.sendMessage("§8/wsk help - §6Zeigt eine Liste mit Befehlen.");
 			p.sendMessage("§8/wsk team - §6Zeigt eine Liste mit Teambefehlen.");
+			p.sendMessage("§8/wsk fights - §6Zeigt alle laufenden Kämpfe an.");
 			p.sendMessage("§8/wsk arena - §6Zeigt eine Liste mit Arenabefehlen.");
 			p.sendMessage("§8/wsk quit [§cteam1§8, §9team2§8] - §6Beendet einen Kampf");
 			p.sendMessage("§8/wsk reload - §6Reloaded das Plugin.");
@@ -146,6 +149,24 @@ public class CommandWSK {
 			return 2;
 		} else {
 			return 0;
+		}
+	}
+	
+	@Command(name="wsk.fights", description="Zeigt alle laufenden Kämpfe an")
+	public void listFights(CommandArgs args) {
+		if(args.isPlayer()) {
+			Player p = args.getPlayer();
+			if(FightManager.fights.isEmpty()) {
+				p.sendMessage(OpenWSK.S_PREFIX+"§cEs finden derzeit keine Kämpfe statt!");
+				return;
+			}
+			p.sendMessage("§7--- §aLaufende Kämpfe §7---");
+			int count = 0;
+			for(Fight f : FightManager.fights) {
+				count ++;
+				p.sendMessage("§8"+count+" §b"+f.getArena().getArenaName()+" §7[§c"+f.getArena().getTeam1().getTeamMembers().size()+"§7 vs. §9"+f.getArena().getTeam1().getTeamMembers().size()+"§7]"
+						+ " §7Captains: §c"+f.getArena().getTeam1().getTeamLeader()+"§7, §9"+f.getArena().getTeam2().getTeamLeader());
+			}
 		}
 	}
 	

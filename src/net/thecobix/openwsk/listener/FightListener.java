@@ -85,6 +85,7 @@ public class FightListener implements Listener {
 		if(t == null) {
 			return;
 		}
+		e.setDeathMessage(null);
 		boolean doEnd = false;
 		for(TeamPlayer tp : t.getTeamMembers()) {
 			if(tp.getPlayerName().equals(p.getName())) {
@@ -168,7 +169,9 @@ public class FightListener implements Listener {
 		e.getFight().stopTimer();
 		Arena a = e.getFight().getArena();
 		a.broadcastInside(OpenWSK.S_PREFIX+e.getReason());
-		a.setState(ArenaState.SPECTATE);
+		if(a.getState() != ArenaState.SPECTATE) {
+			a.setState(ArenaState.SPECTATE);
+		}
 	}
 	
 	@EventHandler
