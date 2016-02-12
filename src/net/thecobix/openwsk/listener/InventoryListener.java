@@ -18,10 +18,6 @@ public class InventoryListener implements Listener {
 	public void click(InventoryClickEvent e) {
 		Player p = (Player) e.getWhoClicked();
 		try{
-			e.getSlot();
-		}catch(NullPointerException r) {
-			return;
-		}
 		if(e.getInventory().getName() == null) {
 			return;
 		}
@@ -60,5 +56,8 @@ public class InventoryListener implements Listener {
 			}
 			e.setCancelled(true);
 		}
+	}catch(NullPointerException e1) {
+		
+	}
 	}
 }
