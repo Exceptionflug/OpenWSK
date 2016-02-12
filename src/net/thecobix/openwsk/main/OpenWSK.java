@@ -61,7 +61,7 @@ public class OpenWSK extends JavaPlugin {
 	public static final String S_PREFIX = "§8[§bWSK§8] §7";
 	public static final String S_NONCOLOR_PREFIX = "[WSK] ";
 	public static String S_VERSION;
-	public static final String S_CODENAME = "Beta 3";
+	public static final String S_CODENAME = "Beta 4";
 	
 	
 	@Override

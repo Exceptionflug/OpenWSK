@@ -37,6 +37,7 @@ public class ConnectionStateChangedListener implements Listener {
 			if(OpenWSK.getPluginInstance().getArenaManager().isInArena(p, a)) {
 				//Silent arena join
 				a.getIn().add(p.getName());
+				a.getScoreboard().enterArena(p);
 				p.teleport(a.getRepo().getSpectatorWarp());
 			}
 		}
@@ -48,6 +49,7 @@ public class ConnectionStateChangedListener implements Listener {
 		for(Arena a : OpenWSK.getPluginInstance().getArenaManager().loadedArenas) {
 			if(OpenWSK.getPluginInstance().getArenaManager().isInArena(p, a)) {
 				a.leave(p.getName());
+				a.getScoreboard().leaveArena(p);
 				Team sucken = null;
 				for(Team t : a.getTeams()) {
 					for(TeamPlayer tp : t.getTeamMembers()) {
