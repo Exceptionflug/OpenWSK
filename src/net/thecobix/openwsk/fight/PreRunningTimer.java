@@ -153,7 +153,7 @@ public class PreRunningTimer {
 					break;
 					
 				default:
-					if(arena.getState() != ArenaState.RUNNING) {
+					if(arena.getState() == ArenaState.IDLE || arena.getState() == ArenaState.SETUP || arena.getState() == ArenaState.SPECTATE || arena.getState() == ArenaState.RESET) {
 						Bukkit.getScheduler().cancelTask(task);
 					}
 					break;

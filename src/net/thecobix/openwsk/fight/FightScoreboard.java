@@ -93,6 +93,7 @@ public class FightScoreboard implements Listener {
 		this.board.getObjective("Team1").setDisplayName("§cTeam1 | Leben");
 		this.board.getObjective("Team1").setDisplaySlot(DisplaySlot.SIDEBAR);
 		this.board.getObjective("Info").getScore("§eZeit in Min.:").setScore(this.arena.getRepo().timeLeftMinutes);
+		this.board.getObjective("Info").getScore("§cKein Entern").setScore(1);
 		initTeams();
 		objectiveSwitcher();
 	}
@@ -106,10 +107,12 @@ public class FightScoreboard implements Listener {
 		this.teamBlue.setDisplayName("teamblue");
 		this.teamBlue.setPrefix("§9");
 		
-		this.teamRed.addEntry("Niemand");
-		this.teamBlue.addEntry("Niemand");
-		this.board.getObjective("Team2").getScore("Niemand").setScore(20);
-		this.board.getObjective("Team1").getScore("Niemand").setScore(20);
+		if(this.teamBlue.getSize() == 0) {
+			this.board.getObjective("Team2").getScore("§cT2 Niemand").setScore(1);
+		}
+		if(this.teamRed.getSize() == 0) {
+			this.board.getObjective("Team1").getScore("§cT1 Niemand").setScore(1);
+		}
 	}
 	
 	public void removeTeamMember(TeamPlayer member, String teamName) {
@@ -117,14 +120,12 @@ public class FightScoreboard implements Listener {
 		if(teamName.equals("team1")) {
 			this.teamRed.removeEntry(member.getPlayerName());
 			if(this.teamRed.getSize() == 0) {
-				this.teamRed.addEntry("Niemand");
-				this.board.getObjective("Team1").getScore("Niemand").setScore(20);
+				this.board.getObjective("Team1").getScore("§cT1 Niemand").setScore(1);
 			}
 		} else {
 			this.teamBlue.removeEntry(member.getPlayerName());
 			if(this.teamBlue.getSize() == 0) {
-				this.teamBlue.addEntry("Niemand");
-				this.board.getObjective("Team2").getScore("Niemand").setScore(20);
+				this.board.getObjective("Team2").getScore("§cT2 Niemand").setScore(1);
 			}
 		}
 		this.board.resetScores(member.getPlayerName());
@@ -133,13 +134,13 @@ public class FightScoreboard implements Listener {
 	public void addTeamMember(Player p, net.thecobix.openwsk.team.Team t) {
 		initScoreboard();
 		if(t.getTeamName().equals("team1")) {
-			this.teamRed.removeEntry("Niemand");
 			this.teamRed.addEntry(p.getName());
 			this.board.getObjective("Team1").getScore(p.getName()).setScore(20);
+			this.board.resetScores("§cT1 Niemand");
 		} else {
-			this.teamBlue.removeEntry("Niemand");
 			this.teamBlue.addEntry(p.getName());
 			this.board.getObjective("Team2").getScore(p.getName()).setScore(20);
+			this.board.resetScores("§cT2 Niemand");
 		}
 	}
 	
@@ -204,6 +205,17 @@ public class FightScoreboard implements Listener {
 				fi.stopTimer();
 				clearScoreboard();
 			}
+		}
+	}
+
+	public void updateEntering(boolean allowed) {
+		String sco = allowed ? "§aEntern erlaubt" : "§cKein Entern";
+		if(allowed) {
+			this.board.resetScores("§cKein Entern");
+			this.board.getObjective("Info").getScore(sco).setScore(1);
+		} else {
+			this.board.resetScores("§aEntern erlaubt");
+			this.board.getObjective("Info").getScore(sco).setScore(1);
 		}
 	}
 	

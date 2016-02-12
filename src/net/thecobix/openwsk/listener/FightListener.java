@@ -64,7 +64,7 @@ public class FightListener implements Listener {
 				for(Team t : fi.getArena().getTeams()) {
 					for(TeamPlayer tp : t.getTeamMembers()) {
 						if(tp.getPlayerName().equals(e.getPlayer().getName())) {
-							if(!fi.getArena().getRepo().isEnteringAllowed() && t.getArena().getState() == ArenaState.RUNNING) {
+							if(!fi.getArena().getRepo().isEnteringAllowed() && t.getArena().getState() == ArenaState.RUNNING && e.getTo().getBlock().isLiquid()) {
 								e.getPlayer().damage((double)fi.getArena().getRepo().getWaterLevelDamage());
 							}
 							if(t.getArena().getState() != ArenaState.RUNNING) {

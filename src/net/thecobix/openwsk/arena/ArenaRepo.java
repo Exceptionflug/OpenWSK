@@ -226,6 +226,7 @@ public class ArenaRepo {
 	
 	public void setEnteringAllowed(boolean enteringAllowed) {
 		this.enteringAllowed = enteringAllowed;
+		arena.getScoreboard().updateEntering(enteringAllowed);
 	}
 	
 	public void setArenaRegion(ProtectedRegion arenaRegion) {

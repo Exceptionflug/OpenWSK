@@ -6,6 +6,7 @@ import de.pro_crafting.commandframework.Command;
 import de.pro_crafting.commandframework.CommandArgs;
 import net.thecobix.openwsk.arena.Arena;
 import net.thecobix.openwsk.arena.ArenaState;
+import net.thecobix.openwsk.fight.PreRunningTimer;
 import net.thecobix.openwsk.main.OpenWSK;
 
 /*
@@ -37,6 +38,7 @@ public class CommandArena {
 		args.getPlayer().sendMessage("§8/wsk arena open §6- Öffnet die Arena");
 		args.getPlayer().sendMessage("§8/wsk arena close §6- Schließt die Arena");
 		args.getPlayer().sendMessage("§8/wsk arena reset §6- Resettet die Arena");
+		args.getPlayer().sendMessage("§8/wsk arena start §6- Startet den Kampf");
 		args.getPlayer().sendMessage("§8/wsk arena info §6- Zeigt dir Informationen über die aktuelle Arena an.");
 	}
 	
@@ -112,6 +114,29 @@ public class CommandArena {
 			}
 			a.getReseter().reset();
 			args.getPlayer().sendMessage(OpenWSK.S_PREFIX+"§aDie Arena wird gleich resettet!");
+		}
+	}
+	
+	@Command(name="wsk.arena.start", description="Startet den Kampf", usage="/wsk arena start", permission="wsk.arena.start")
+	public void start(CommandArgs args) {
+		if(args.isPlayer()) {
+			Player p = args.getPlayer();
+			Arena a = OpenWSK.getPluginInstance().getArenaManager().getArenaFromPlayer(p);
+			if(a == null) {
+				p.sendMessage(OpenWSK.S_PREFIX+"§cDu stehst in keiner Arena!");
+				return;
+			}
+			if(a.getState() != ArenaState.SETUP) {
+				p.sendMessage(OpenWSK.S_PREFIX+"§cArena ist im falschen Zustand");
+				return;
+			}
+			if(a.getTeam1().getTeamMembers().size() == 0 || a.getTeam2().getTeamMembers().size() == 0) {
+				p.sendMessage(OpenWSK.S_PREFIX+"§cDer Kampf ist nicht fertig vorbereitet.");
+				return;
+			}
+			a.setState(ArenaState.PRERUNNING);
+			PreRunningTimer prt = new PreRunningTimer(a);
+			prt.preRunningTimer();
 		}
 	}
 	

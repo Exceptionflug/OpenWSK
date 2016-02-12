@@ -101,6 +101,10 @@ public class Team {
 			arena.broadcastInside(OpenWSK.S_PREFIX+"§cDer Captain von "+teamName+" hat das Team verlassen!");
 			teamLeader = null;
 		}
+		if(arena.getState() != ArenaState.IDLE) {
+			arena.getScoreboard().removeTeamMember(sucken, teamName);
+		}
+		this.teamMembers.remove(sucken);
 		for(Fight fi : FightManager.fights) {
 			if(fi.getArena().getArenaName().equals(arena.getArenaName())) {
 				if(arena.getState() == ArenaState.RUNNING) {
@@ -114,10 +118,6 @@ public class Team {
 				}
 			}
 		}
-		if(arena.getState() != ArenaState.IDLE) {
-			arena.getScoreboard().removeTeamMember(sucken, teamName);
-		}
-		this.teamMembers.remove(sucken);
 	}
 	
 	public boolean addPlayer(Player player) {
