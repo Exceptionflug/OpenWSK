@@ -177,11 +177,14 @@ public class FightListener implements Listener {
 	@EventHandler
 	public void damageByEntity(EntityDamageByEntityEvent e) {
 		Player damager = null;
+		if(e.getDamager() == null) {
+			return;
+		}
 		if(!(e.getEntity() instanceof Player)) {
 			return;
 		}
 		Player p = (Player) e.getEntity();
-		if (e.getDamager() instanceof Projectile
+		if(e.getDamager() instanceof Projectile
 				&& ((Projectile)e.getDamager()).getShooter() instanceof Player) {
 			damager = (Player) ((Projectile)e.getDamager()).getShooter();
 		} else if (e.getDamager() instanceof Player) {
