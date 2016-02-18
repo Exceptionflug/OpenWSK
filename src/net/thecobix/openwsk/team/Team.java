@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import net.TheCobix.System.API.PrefixUtil;
 import net.thecobix.openwsk.arena.Arena;
 import net.thecobix.openwsk.arena.ArenaState;
 import net.thecobix.openwsk.events.FightQuitEvent;
@@ -118,6 +119,8 @@ public class Team {
 				}
 			}
 		}
+		Player p = Bukkit.getPlayerExact(name);
+		PrefixUtil.delFighter(p.getUniqueId().toString());
 	}
 	
 	public boolean addPlayer(Player player) {
@@ -148,6 +151,8 @@ public class Team {
 			}
 		}
 		teamMembers.add(tp);
+		Player p = Bukkit.getPlayerExact(name);
+		PrefixUtil.addFighter(p.getName(), p.getUniqueId().toString());
 		return true;
 	}
 	
