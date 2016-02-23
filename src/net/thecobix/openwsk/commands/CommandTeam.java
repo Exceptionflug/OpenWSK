@@ -311,10 +311,11 @@ public class CommandTeam {
 			if(t == null) {
 				p.sendMessage(OpenWSK.S_PREFIX+"§cDu bist in keinem Team.");
 				return;
-			}
-			if(t.getTeamLeader().equals(p.getName())) {
-				p.sendMessage(OpenWSK.S_PREFIX+"§cDu bist Captain. Du kannst keine andere Rolle übernehmen.");
-				return;
+			}if(t.getTeamLeader() != null) {
+				if( t.getTeamLeader().equals(p.getName())) {
+					p.sendMessage(OpenWSK.S_PREFIX+"§cDu bist Captain. Du kannst keine andere Rolle übernehmen.");
+					return;
+				}
 			}
 			Inventory inv = Bukkit.createInventory(null, 27, "§aEinheiten");
 			ItemStack spf = new ItemStack(Material.ENDER_PEARL);

@@ -387,6 +387,20 @@ public class Arena {
 		waterRemover.stop();
 		state = ArenaState.IDLE;
 		teamManager = new TeamManager(this);
+		for(TeamPlayer tp : getTeam1().getTeamMembers()) {
+			Bukkit.getScheduler().scheduleAsyncDelayedTask(OpenWSK.getPluginInstance(), new Runnable() {
+				public void run() {
+					getTeam1().removePlayer(tp.getPlayerName());
+				}
+			}, 10L);
+		}
+		for(TeamPlayer tp : getTeam2().getTeamMembers()) {
+			Bukkit.getScheduler().scheduleAsyncDelayedTask(OpenWSK.getPluginInstance(), new Runnable() {
+				public void run() {
+					getTeam2().removePlayer(tp.getPlayerName());
+				}
+			}, 10L);
+		}
 		teams.clear();
 		teams.add(new Team("team1", this));
 		teams.add(new Team("team2", this));
