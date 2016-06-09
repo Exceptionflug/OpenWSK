@@ -88,7 +88,7 @@ public class WaterRemoveSystem implements Listener {
 					this.waterList.add(b);
 					this.explBlocks.remove(i);
 				} else {
-					this.explBlocks.get(i).setValue(this.explBlocks.get(i).getValue()+1);
+				    this.explBlocks.remove(i);
 				}
 			}
 		}
