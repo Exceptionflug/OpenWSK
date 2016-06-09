@@ -85,7 +85,7 @@ public class ArenaListener implements Listener {
 			for(Team t : a.getTeams()) {
 				for(TeamPlayer tp : t.getTeamMembers()) {
 					Player z = Bukkit.getPlayerExact(tp.getPlayerName());
-					z.playSound(z.getLocation(), Sound.NOTE_PLING, 100, 1);
+					z.playSound(z.getLocation(), Sound.BLOCK_NOTE_PLING, 100, 1);
 				}
 			}
 			
