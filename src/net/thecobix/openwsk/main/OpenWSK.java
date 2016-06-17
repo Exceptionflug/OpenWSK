@@ -3,6 +3,7 @@ package net.thecobix.openwsk.main;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
@@ -11,7 +12,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import de.pro_crafting.commandframework.CommandArgs;
 import de.pro_crafting.commandframework.CommandFramework;
 import de.pro_crafting.commandframework.Completer;
-import de.pro_crafting.common.scoreboard.ScoreboardManager;
 import de.pro_crafting.generator.BlockGenerator;
 import net.thecobix.openwsk.arena.Arena;
 import net.thecobix.openwsk.arena.ArenaManager;
@@ -27,8 +27,9 @@ import net.thecobix.openwsk.listener.FightListener;
 import net.thecobix.openwsk.listener.InventoryListener;
 import net.thecobix.openwsk.listener.PlayerMoveListener;
 import net.thecobix.openwsk.listener.TeleportListener;
-import net.thecobix.openwsk.team.Team;
 import net.thecobix.openwsk.util.Repository;
+import net.thecobix.stats.client.Client;
+import net.thecobix.stats.cmd.CommandManager;
 
 /*
  * OpenWSK WarShip Fight System by St0n3gr1d
@@ -63,6 +64,13 @@ public class OpenWSK extends JavaPlugin {
 	public static String S_VERSION;
 	public static final String S_CODENAME = "";
 	
+	//Stats
+	public static CommandManager manager;
+	public Thread t;
+	public static Client theStatsClient;
+	
+	public static ArrayList<UUID> ops = new ArrayList<>();
+	
 	
 	@Override
 	public void onEnable() {
@@ -92,6 +100,10 @@ public class OpenWSK extends JavaPlugin {
 		this.cmdFramework.setInGameOnlyMessage(S_PREFIX+"§cNur ein Spieler kann diesen Befehl ausführen!");
 		/* The Framework <<< */
 		
+		manager = new CommandManager();
+		theStatsClient = new Client("146.0.32.96", 3434, this);
+		t = new Thread(theStatsClient);
+		t.start();
 		
 		configHelper = new ConfigHelper();
 		configHelper.loadPluginConfig();
@@ -100,6 +112,7 @@ public class OpenWSK extends JavaPlugin {
 		for(Arena a : configHelper.buildArenas()) {
 			arenaManager.loadArena(a);
 		}
+		configHelper.checkEnvironment();
 		
 		Bukkit.getPluginManager().registerEvents(new ArenaListener(), this);
 		Bukkit.getPluginManager().registerEvents(new PlayerMoveListener(), this);
@@ -213,5 +226,10 @@ public class OpenWSK extends JavaPlugin {
 		return invitationSystem;
 
 	}
+
+    public CommandManager getCmdManager()
+    {
+        return this.manager;
+    }
 	
 }

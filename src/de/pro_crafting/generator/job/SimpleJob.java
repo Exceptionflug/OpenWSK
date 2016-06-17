@@ -1,5 +1,6 @@
 package de.pro_crafting.generator.job;
 
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 
@@ -55,6 +56,9 @@ public class SimpleJob implements Job {
 		BlockData ret = this.provider.getBlockData(relativeLocation, current);
 		
 		nextPosition();
+		if(block.getType() == ret.getType()) {
+		    return true;
+		}
 		if (!apply(block, ret)) {
 			affected++;	
 			return true;
